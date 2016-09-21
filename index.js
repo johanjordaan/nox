@@ -273,134 +273,78 @@ nox.rnd.normal = (input) => {
 }
 
 nox.select = (input) => {
-  if !input.count? then input.count = 1
-  if !input.return_one? then input.return_one = false
-  if !input.enable_batching? then input.enable_batching = false
-  if !input.batch_size? then input.batch_size = 0
-  if !input.batch_cb? then input.batch_cb = () ->
+  if(!input.count) input.count = 1;
+  if(!input.return_one) input.returnOne = false
 
-  ret_val =
-    _nox_method : true
-    _nox_errors : []
-    count : input.count
-    values : input.values
-    return_one : input.return_one
-    enable_batching : input.enable_batching
-    batch_size : input.batch_size
-    batch_cb : input.batch_cb
-    run : (target_object) ->
-      if nox.check_fields @,['values']
-        return @_nox_errors
+  var retVal = {
+     _noxMethod: true,
+     _noxErrors: [],
+     count : input.count,
+     values : input.values,
+     returnOne : input.returnOne,
+     run: (targetObject) => {
+         if(nox.checkFields(this,['values'])) return this._noxErrors
 
-      count = nox.resolve @count, target_object
-      values = nox.resolve @values, target_object
-      return_one = nox.resolve @return_one, target_object
-      enable_batching = nox.resolve @enable_batching, target_object
-      batch_size = nox.resolve @batch_size, target_object
-      batch_cb = nox.resolve @batch_cb, target_object
+         var count = nox.resolve(this.count, target_object);
+         var returnOne = nox.resolve(this.return_one, targetObject);
+         var values = nox.resolve(this.values, targetObject);
 
-      # If the size of the list is 0 and we dont require only one then return an empty list
-      #
-      if count == 0 && !return_one
-        return []
+         if(count === 0 && !returnOne)
+           return [];
 
-      if count !=1 && return_one
-        @_nox_errors.push "To select one a count of exactly 1 is required."
-        return @_nox_errors
+         if(count !=1 && returnOne) {
+            this._noxErrors.push("To select one a count of exactly 1 is required.")
+            return this._noxErrors;
+         }
 
-      if _.size(values) == 0
-        @_nox_errors.push "Values list should contain at least one value."
-        return @_nox_errors
+         if(_.size(values) == 0) {
+            this._noxErrors.push("Values list should contain at least one value.")
+            return this._noxErrors;
+         }
 
-      default_probability = 1/_.size(values)
+         var defaultProbability = 1/_.size(values);
 
+         var retArr = [];
+         _.each(_.range(0,count), (i) => {
+            var r = Math.random();
+            var totalProbability = 0;
 
-      # Handle the half batches at the end
-      #
-      extra_batch = 0
-      if count%batch_size > 0
-        extra_batch = 1
-      # Calculate the number of batches required
-      #
-      num_batches = Math.floor(count/batch_size)+extra_batch
-      batch_count = 0
-      batch_busy = false
+            _.each(values, (item) => {
+               var probability = default_probability;
+               if(item.probability) probability = item.probability;
+               totalProbability += probability;
 
-      ret_val = []
-      generate = () ->
-        batch_busy = true
-        ret_arr = []
-
-        start = 0
-        stop  = count
-        if enable_batching
-          start = batch_count*batch_size
-          stop = (batch_count+1)*batch_size
-          last_batch = false
-          if stop>count
-            stop = count
-            last_batch = true
-
-
-        for i in _.range(start,stop)
-          r = Math.random()
-          total_probability = 0
-          for item in values
-            probability = if item.probability? then item.probability else default_probability
-            total_probability += probability
-            if r<=total_probability
-              if item.item? && item.probability?
-                if nox.is_template(item.item)
-                  ret_arr.push nox.construct_template item.item,target_object,i
-                  break
-                else
-                  if _.isString(item.item) && _.contains(_.keys(nox.templates),item.item)
-                    ret_arr.push nox.construct_template nox.templates[item.item],target_object,i
-                    break
+               if(r<=total_probability)
+                  if(item.item && item.probability)
+                     if(nox.isTemplate(item.item))
+                        ret_arr.push nox.construct_template item.item,target_object,i
+                        break
                   else
-                    ret_arr.push item.item
-                    break
-              else
-                if nox.is_template item
-                  ret_arr.push nox.construct_template item,target_object,i
-                  break
-                else if _.isString(item) && _.contains(_.keys(nox.templates),item)
-                  ret_arr.push nox.construct_template nox.templates[item],target_object,i
-                  break
-                else
-                  ret_arr.push item
-                  break
+                     if _.isString(item.item) && _.contains(_.keys(nox.templates),item.item)
+                        ret_arr.push nox.construct_template nox.templates[item.item],target_object,i
+                        break
+                     else
+                        ret_arr.push item.item
+                        break
+                  else
+                     if nox.is_template item
+                        ret_arr.push nox.construct_template item,target_object,i
+                        break
+                     else if _.isString(item) && _.contains(_.keys(nox.templates),item)
+                        ret_arr.push nox.construct_template nox.templates[item],target_object,i
+                        break
+                     else
+                        ret_arr.push item
+                        break
+            });
+         });
 
-        if enable_batching
-          batch_cb batch_size,batch_count,last_batch,ret_arr, () ->
-            console.log 'Here....'
-            batch_count += 1
-            batch_busy = false
-
-        return ret_arr
-
-      ret_val = generate()
-
-      if enable_batching
-        f = () ->
-          if batch_count <= num_batches
-            if not batch_busy
-              generate()
-            else
-              console.log 'Waiting...'
-            setTimeout f,100
-
-        setTimeout f,100
-
-
-
-
-
-      if return_one
+      if returnOne
         return ret_val[0]
       else
         return ret_val
-  return ret_val
+   }
+   return ret_val;
 }
 
 nox.select.one = (input) => {
