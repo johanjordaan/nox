@@ -1,20 +1,20 @@
-"use strict"
+"use strict";
 
-var _ = require('underscore')
+var _ = require('underscore');
 
-var nox = {}
+var nox = {};
 
 nox.isTemplate = (object) => {
    if(!object) return false;
    if(!_.isObject(object)) return false;
    return object._noxTemplate;
-}
+};
 
 nox.isMethod = (object) => {
    if(!object) return false;
    if(!_.isObject(object)) return false;
    return object._noxMethod == true;
-}
+};
 
 nox.deepClone = (source, directives) => {
    if(_.isFunction(source) || _.isNumber(source) || _.isString(source) || _.isBoolean(source))
@@ -24,7 +24,7 @@ nox.deepClone = (source, directives) => {
       var retVal = [];
       _.each(source, (item) => {
          retVal.push(nox.deepClone(item));
-      })
+      });
       return retVal;
    }
 
@@ -35,17 +35,17 @@ nox.deepClone = (source, directives) => {
          } else {
            retVal[key] = nox.deepClone(source[key],directives);
          }
-      })
+      });
       return retVal;
-}
+};
 
 nox.probability = (probability,item) => {
    var retVal = {
       probability: probability,
       item: item,
-   }
+   };
   return retVal;
-}
+};
 
 nox.isMethodValid = (method) => {
    if(method._noxErrors.length > 0) return false;
@@ -56,7 +56,7 @@ nox.isMethodValid = (method) => {
           return false;
    });
    return true;
-}
+};
 
 nox.isTemplateValid = (template) => {
    if(!template) return false;
@@ -70,9 +70,9 @@ nox.isTemplateValid = (template) => {
             return false;
    });
    return true;
-}
+};
 
-nox.templates = {}
+nox.templates = {};
 
 // Note this will owerwrite any other template by this name
 nox.createTemplate = (name, properties) => {
@@ -80,7 +80,7 @@ nox.createTemplate = (name, properties) => {
    properties._noxTemplate = true;
    properties._noxTemplateName = name;
    return properties;
-}
+};
 
 nox.constructTemplate = (template, parent, index) => {
    var ret_val = {
@@ -114,10 +114,10 @@ nox.constructTemplate = (template, parent, index) => {
            retVal[key] = nox.deepClone(template[key]);
       }
 
-   })
+   });
 
   return retVal;
-}
+};
 
 nox.extendFields = (fields, properties, directives) => {
    _.each(_.keys(properties), (key) => {
@@ -128,15 +128,15 @@ nox.extendFields = (fields, properties, directives) => {
       //
       //
       if(directives && directives.remove && key in directives.remove)
-        delete(fields[key])
+        delete(fields[key]);
       else {
          if(!fields[key] || !_.isObject(properties[key]) || !_.isObject(fields[key]) || nox.isMethod(properties[key]))
-            fields[key] = nox.deepClone(properties[key])
+            fields[key] = nox.deepClone(properties[key]);
          else
-            nox.extendFields(fields[key],properties[key])
+            nox.extendFields(fields[key],properties[key]);
       }
    });
-}
+};
 
 nox.extendTemplate = (sourceTemplate,name,properties,directives) => {
    //First copy the source_teplate as is
@@ -144,66 +144,65 @@ nox.extendTemplate = (sourceTemplate,name,properties,directives) => {
    var retVal = nox.deepClone(sourceTemplate,directives);
    nox.extendFields(retVal,properties,directives);
 
-   return nox.createTemplate(name,retVal)
-}
+   return nox.createTemplate(name,retVal);
+};
 
 nox.deNox = (object) => {
    if(_.isArray(o)) {
       _.each(object,(item)=>{
          nox.deNox(item);
-      })
+      });
    } else {
 
       if(_.isObject(object)) {
-         delete object._parent
-         delete object._nox_errors
-         delete object._index
-         delete object._nox_template_name
+         delete object._parent;
+         delete object._nox_errors;
+         delete object._index;
+         delete object._nox_template_name;
       }
 
       _.each(_.keys(object),(key)=>{
          nox.deNox(object[key]);
-      })
+      });
    }
-}
+};
 
 nox.resolve = (parameter,targetObject) => {
-   if(nox.isMethod(paremeter)) {
+   if(nox.isMethod(parameter)) {
       return parameter.run(targetObject);
    } else {
       return parameter;
    }
-
-}
+};
 
 nox.checkField = (field, field_name, errors) => {
    if(!field)
-      errors.push('Required field [${field_name}] is missing.');
-}
+      errors.push(`Required field [${field_name}] is missing.`);
+};
 
 nox.checkFields = (source,field_list) => {
    _.each(field_list, (field) =>{
       nox.checkField(source[field],field,source._noxErrors);
-   })
+   });
 
-  return source._noxErrors.length > 0
-}
+  return source._noxErrors.length > 0;
+};
 
 nox.const = (input) => {
-   var retVal = {
-      _noxMethod : true,
-      _noxErrors : [],
-      value : input.value,
-      run : (targetObject) => {
+   var retVal = new function() {
+      this._noxMethod = true;
+      this._noxErrors = [];
+      this.value = input.value;
+      this.run = (targetObject) => {
          if(nox.checkFields(this,['value']))
            return this._noxErrors;
 
          var value = nox.resolve(this.value,targetObject);
          return value;
-      },
-   }
+      };
+   };
   return retVal;
-}
+};
 
 nox.method = (input) => {
    var retVal = {
@@ -212,20 +211,20 @@ nox.method = (input) => {
       method : input.method,
       run : (targetObject) => {
          if(nox.checkFields(this,['method']))
-            return this._noxErrors
+            return this._noxErrors;
 
          var method = nox.resolve(this.method,targetObject);
-         return method(targetObject)
+         return method(targetObject);
       }
-   }
+   };
 
    return retVal;
-}
+};
 
 nox.rnd = (input) => {
-   if(!input.min) input.min = 0
-   if(!input.normal) input.normal = false
-   if(!input.integer) input.integer = false
+   if(!input.min) input.min = 0;
+   if(!input.normal) input.normal = false;
+   if(!input.integer) input.integer = false;
 
    var retVal = {
       _noxMethod: true,
@@ -253,25 +252,26 @@ nox.rnd = (input) => {
                value += _.random(min,max);
             else
               value += min + diff*Math.random();
-         })
+         });
          value = value/itterations;
          return value;
       }
-   }
+   };
    return retVal;
-}
+};
 
 
 nox.rnd.int = (input) => {
    input.integer = true;
    return nox.rnd(input);
-}
+};
 
 nox.rnd.normal = (input) => {
    input.normal = true;
    return nox.rnd(input);
-}
+};
 
+/*
 nox.select = (input) => {
   if(!input.count) input.count = 1;
   if(!input.return_one) input.returnOne = false
@@ -314,7 +314,7 @@ nox.select = (input) => {
                if(item.probability) probability = item.probability;
                totalProbability += probability;
 
-               if(r<=total_probability)
+   /*            if(r<=total_probability)
                   if(item.item && item.probability)
                      if(nox.isTemplate(item.item))
                         ret_arr.push nox.construct_template item.item,target_object,i
@@ -339,18 +339,23 @@ nox.select = (input) => {
             });
          });
 
-      if returnOne
+      if(returnOne)
         return ret_val[0]
       else
         return ret_val
    }
-   return ret_val;
+   //return ret_val;
 }
+*/
+
+nox.select = (input) => {
+
+};
 
 nox.select.one = (input) => {
    input.count = 1;
    input.returnOne = true;
    return nox.select(input);
-}
+};
 
-module.exports = nox
+module.exports = nox;
