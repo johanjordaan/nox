@@ -176,12 +176,12 @@ nox.resolve = (parameter,targetObject) => {
 };
 
 nox.checkField = (field, field_name, errors) => {
-   if(!field)
+   if(field === undefined)
       errors.push(`Required field [${field_name}] is missing.`);
 };
 
-nox.checkFields = (source,field_list) => {
-   _.each(field_list, (field) =>{
+nox.checkFields = (source, field_list) => {
+   _.each(field_list, (field) => {
       nox.checkField(source[field],field,source._noxErrors);
    });
 
@@ -222,19 +222,19 @@ nox.method = (input) => {
 };
 
 nox.rnd = (input) => {
-   if(!input.min) input.min = 0;
-   if(!input.normal) input.normal = false;
-   if(!input.integer) input.integer = false;
+   if(input.min === undefined) input.min = 0;
+   if(input.normal === undefined) input.normal = false;
+   if(input.integer === undefined) input.integer = false;
 
-   var retVal = {
-      _noxMethod: true,
-      _noxErrors: [],
-      min: input.min,
-      max: input.max,
-      normal: input.normal,
-      integer: input.integer,
-      run : (targetObject) => {
-         if(nox.check_fields(this,['min','max','normal','integer']))
+   var retVal = new function() {
+      this._noxMethod = true;
+      this._noxErrors = [];
+      this.min = input.min;
+      this.max = input.max;
+      this.normal = input.normal;
+      this.integer = input.integer;
+      this.run = (targetObject) => {
+         if(nox.checkFields(this,['min','max','normal','integer']))
             return this._noxErrors;
 
          var min = nox.resolve(this.min, targetObject);
@@ -255,7 +255,7 @@ nox.rnd = (input) => {
          });
          value = value/itterations;
          return value;
-      }
+      };
    };
    return retVal;
 };
