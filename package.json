@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/johanjordaan/nox#readme",
   "dependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.0.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.0.2",
     "eslint": "^3.5.0",
     "eslint-config-keystone": "^2.4.0",
     "eslint-plugin-react": "^6.3.0"
