@@ -205,17 +205,17 @@ nox.const = (input) => {
 };
 
 nox.method = (input) => {
-   var retVal = {
-      _noxMethod: true,
-      _noxErrors: [],
-      method : input.method,
-      run : (targetObject) => {
+   var retVal = new function() {
+      this._noxMethod = true;
+      this._noxErrors = [];
+      this.method = input.method;
+      this.run = (targetObject) => {
          if(nox.checkFields(this,['method']))
             return this._noxErrors;
 
          var method = nox.resolve(this.method,targetObject);
          return method(targetObject);
-      }
+      };
    };
 
    return retVal;
