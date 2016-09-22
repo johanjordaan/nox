@@ -83,7 +83,7 @@ nox.createTemplate = (name, properties) => {
 };
 
 nox.constructTemplate = (template, parent, index) => {
-   var ret_val = {
+   var retVal = {
       _parent: parent,
       _index: index,
       _noxErrors: [],
@@ -271,21 +271,21 @@ nox.rnd.normal = (input) => {
    return nox.rnd(input);
 };
 
-/*
+
 nox.select = (input) => {
-  if(!input.count) input.count = 1;
-  if(!input.return_one) input.returnOne = false
+   if(input.count === undefined) input.count = 1;
+   if(input.returnOne === undefined) input.returnOne = false;
 
-  var retVal = {
-     _noxMethod: true,
-     _noxErrors: [],
-     count : input.count,
-     values : input.values,
-     returnOne : input.returnOne,
-     run: (targetObject) => {
-         if(nox.checkFields(this,['values'])) return this._noxErrors
+   var retVal = new function() {
+      this._noxMethod = true;
+      this._noxErrors = [];
+      this.count = input.count;
+      this.values = input.values;
+      this.returnOne = input.returnOne;
+      this.run = (targetObject) => {
+         if(nox.checkFields(this,['values'])) return this._noxErrors;
 
-         var count = nox.resolve(this.count, target_object);
+         var count = nox.resolve(this.count, targetObject);
          var returnOne = nox.resolve(this.return_one, targetObject);
          var values = nox.resolve(this.values, targetObject);
 
@@ -293,12 +293,12 @@ nox.select = (input) => {
            return [];
 
          if(count !=1 && returnOne) {
-            this._noxErrors.push("To select one a count of exactly 1 is required.")
+            this._noxErrors.push("To select one a count of exactly 1 is required.");
             return this._noxErrors;
          }
 
          if(_.size(values) == 0) {
-            this._noxErrors.push("Values list should contain at least one value.")
+            this._noxErrors.push("Values list should contain at least one value.");
             return this._noxErrors;
          }
 
@@ -308,51 +308,55 @@ nox.select = (input) => {
          _.each(_.range(0,count), (i) => {
             var r = Math.random();
             var totalProbability = 0;
+            var found = false;
 
             _.each(values, (item) => {
-               var probability = default_probability;
+               if(found) return;
+
+               var probability = defaultProbability;
                if(item.probability) probability = item.probability;
                totalProbability += probability;
 
-   /*            if(r<=total_probability)
-                  if(item.item && item.probability)
-                     if(nox.isTemplate(item.item))
-                        ret_arr.push nox.construct_template item.item,target_object,i
-                        break
-                  else
-                     if _.isString(item.item) && _.contains(_.keys(nox.templates),item.item)
-                        ret_arr.push nox.construct_template nox.templates[item.item],target_object,i
-                        break
-                     else
-                        ret_arr.push item.item
-                        break
-                  else
-                     if nox.is_template item
-                        ret_arr.push nox.construct_template item,target_object,i
-                        break
-                     else if _.isString(item) && _.contains(_.keys(nox.templates),item)
-                        ret_arr.push nox.construct_template nox.templates[item],target_object,i
-                        break
-                     else
-                        ret_arr.push item
-                        break
+               if(r<=totalProbability) {
+                  found = true;
+                  if(item.item && item.probability) {
+                     if(nox.isTemplate(item.item)) {
+                        retArr.push(nox.construct_template(item.item,targetObject,i));
+                        found = true;
+                     } else {
+                        if(_.isString(item.item) && _.contains(_.keys(nox.templates),item.item)) {
+                           retArr.push(nox.constructTemplate(nox.templates[item.item],targetObject,i));
+                        } else {
+                           retArr.push(item.item);
+                        }
+                     }
+                  } else {
+                     if(nox.isTemplate(item)) {
+                        retArr.push(nox.constructTemplate(item,targetObject,i));
+                     } else {
+                        if(_.isString(item) && _.contains(_.keys(nox.templates),item)) {
+                           retArr.push(nox.constructTemplate(nox.templates[item],targetObject,i));
+                        } else {
+                           retArr.push(item);
+                        }
+                     }
+                  }
+               }
             });
          });
 
-      if(returnOne)
-        return ret_val[0]
-      else
-        return ret_val
-   }
-   //return ret_val;
-}
-*/
+         if(this.returnOne)
+           return retArr[0];
+         else
+           return retArr;
+      };
+   };
 
-nox.select = (input) => {
-
+   return retVal;
 };
 
-nox.select.one = (input) => {
+
+nox.selectOne = (input) => {
    input.count = 1;
    input.returnOne = true;
    return nox.select(input);
