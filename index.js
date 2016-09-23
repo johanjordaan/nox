@@ -5,13 +5,13 @@ var _ = require('underscore');
 var nox = {};
 
 nox.isTemplate = (object) => {
-   if(!object) return false;
+   if(object === undefined) return false;
    if(!_.isObject(object)) return false;
    return object._noxTemplate;
 };
 
 nox.isMethod = (object) => {
-   if(!object) return false;
+   if(object === undefined) return false;
    if(!_.isObject(object)) return false;
    return object._noxMethod == true;
 };
@@ -31,7 +31,7 @@ nox.deepClone = (source, directives) => {
    if(_.isObject(source))
       var retVal = {};
       _.each(_.keys(source), (key) => {
-         if (directives && directives.remove && key in directives.remove) {
+         if (directives !== undefined && directives.remove && _.contains(directives.remove,key)) {
          } else {
            retVal[key] = nox.deepClone(source[key],directives);
          }
@@ -59,7 +59,7 @@ nox.isMethodValid = (method) => {
 };
 
 nox.isTemplateValid = (template) => {
-   if(!template) return false;
+   if(template === undefined) return false;
    if(!_.isObject(template)) return false;
 
    if(!nox.isTemplate(template)) return false;
@@ -89,7 +89,7 @@ nox.constructTemplate = (template, parent, index) => {
       _noxErrors: [],
    };
 
-   if(!template) {
+   if(template === undefined) {
       retVal._noxErrors.push("Cannot construct template with undefined template parameter.");
       return retVal;
    }
@@ -97,9 +97,9 @@ nox.constructTemplate = (template, parent, index) => {
    if(_.isString(template)) {
       var templateStr = template;
       var template = nox.templates[template];
-      if(!template) {
+      if(template === undefined) {
          retVal._noxErrors.push("Cannot find template [" + templateStr + "].");
-         return ret_val;
+         return retVal;
       }
    }
 
@@ -127,10 +127,10 @@ nox.extendFields = (fields, properties, directives) => {
       //   then simply deep_clone key from the parameters
       //
       //
-      if(directives && directives.remove && key in directives.remove)
+      if(directives !== undefined && directives.remove && _.contains(directives.remove,key))
         delete(fields[key]);
       else {
-         if(!fields[key] || !_.isObject(properties[key]) || !_.isObject(fields[key]) || nox.isMethod(properties[key]))
+         if(fields[key] === undefined || !_.isObject(properties[key]) || !_.isObject(fields[key]) || nox.isMethod(properties[key]))
             fields[key] = nox.deepClone(properties[key]);
          else
             nox.extendFields(fields[key],properties[key]);
