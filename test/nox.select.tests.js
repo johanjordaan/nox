@@ -107,11 +107,10 @@ describe('nox.select', () => {
          values: [alien,female,male],
       });
 
-      test_utils.fixRandomValues [1,0.5,0.5,1];
+      test_utils.fixRandomValues([1,0.5,0.5,1]);
       var result = a.run();
-      console.log(result);
 
-      it('should return template instances based on the random numbers supplied', () => {
+      it('should return template instances based on the random numbers supplied', (done) => {
          result[0].name.should.equal('Joe');
          result[1].name.should.equal('Ruth');
          done();
@@ -133,7 +132,7 @@ describe('nox.select', () => {
          }),
       });
 
-      test_utils.fixRandomValues [0.5,0.5,1];
+      test_utils.fixRandomValues([0.5,0.5,1]);
       var result = r.run();
 
       it('should get the list of values from the method and select a random one from the list;', (done) => {
