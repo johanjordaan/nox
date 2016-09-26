@@ -23,7 +23,6 @@ var deepClone = (source, directives) => {
       var retVal = {};
       _.each(_.keys(source), (key) => {
          if (  directives !== undefined
-               && directives.remove
                && _.contains(directives.remove,key)) {
             // Do not copy anything
          } else {
