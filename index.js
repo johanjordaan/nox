@@ -2,6 +2,9 @@
 
 var _ = require('underscore');
 
+var deepClone = require('./deepClone');
+
+
 var nox = {};
 
 nox.isTemplate = (object) => {
@@ -16,28 +19,7 @@ nox.isMethod = (object) => {
    return object._noxMethod == true;
 };
 
-nox.deepClone = (source, directives) => {
-   if(_.isFunction(source) || _.isNumber(source) || _.isString(source) || _.isBoolean(source))
-      return source;
 
-   if(_.isArray(source)) {
-      var retVal = [];
-      _.each(source, (item) => {
-         retVal.push(nox.deepClone(item));
-      });
-      return retVal;
-   }
-
-   if(_.isObject(source))
-      var retVal = {};
-      _.each(_.keys(source), (key) => {
-         if (directives !== undefined && directives.remove && _.contains(directives.remove,key)) {
-         } else {
-           retVal[key] = nox.deepClone(source[key],directives);
-         }
-      });
-      return retVal;
-};
 
 nox.probability = (probability,item) => {
    var retVal = {
@@ -111,7 +93,7 @@ nox.constructTemplate = (template, parent, index) => {
          if(nox.isMethod(template[key]))
             retVal[key] = template[key].run(retVal);
          else
-           retVal[key] = nox.deepClone(template[key]);
+           retVal[key] = deepClone(template[key]);
       }
 
    });
@@ -119,7 +101,7 @@ nox.constructTemplate = (template, parent, index) => {
   return retVal;
 };
 
-nox.extendFields = (fields, properties, directives) => {
+nox.extendFields = (sourceTemplate, properties, directives) => {
    _.each(_.keys(properties), (key) => {
       // If the key does not exist in the source or (allows for new keys to be aded)
       // the properties value is not an object (allows methods to be overwritten by direct assignemnts)
@@ -128,12 +110,20 @@ nox.extendFields = (fields, properties, directives) => {
       //
       //
       if(directives !== undefined && directives.remove && _.contains(directives.remove,key))
-        delete(fields[key]);
+        delete(sourceTemplate[key]);
       else {
-         if(fields[key] === undefined || !_.isObject(properties[key]) || !_.isObject(fields[key]) || nox.isMethod(properties[key]))
-            fields[key] = nox.deepClone(properties[key]);
-         else
-            nox.extendFields(fields[key],properties[key]);
+         var propertiesClone = deepClone(properties[key]);
+
+
+
+         /*if(sourceTemplate[key] === undefined
+            || !_.isObject(properties[key])
+            || !_.isObject(sourceTemplate[key])
+            || nox.isMethod(properties[key])) {
+            sourceTemplate[key] = deepClone(properties[key]);
+         } else {
+            nox.extendFields(sourceTemplate[key],properties[key]);
+         }*/
       }
    });
 };
@@ -141,10 +131,10 @@ nox.extendFields = (fields, properties, directives) => {
 nox.extendTemplate = (sourceTemplate,name,properties,directives) => {
    //First copy the source_teplate as is
    //
-   var retVal = nox.deepClone(sourceTemplate,directives);
-   nox.extendFields(retVal,properties,directives);
+   var newTemplate = deepClone(sourceTemplate,directives);
+   nox.extendFields(newTemplate,properties,directives);
 
-   return nox.createTemplate(name,retVal);
+   return nox.createTemplate(name,newTemplate);
 };
 
 nox.deNox = (object) => {

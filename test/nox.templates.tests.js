@@ -231,11 +231,10 @@ describe('nox.extend_template', () => {
          done();
       });
 
-      it('should allow the overriding of a nox_method by a direct value', (done) => {
+      it('should allow the overriding of a noxMethod by a direct value', (done) => {
          childTemplate.another.should.equal("not 10");
          done();
       });
-
 
       test_utils.fixRandomValue(1);
       var child = nox.constructTemplate(childTemplate);
