@@ -104,7 +104,6 @@ describe('nox.deepClone', () => {
          };
          var clone = deepClone(source);
 
-
          it('should return a copy of an object', (done) => {
             deepCompare(source,clone).should.equal(true);
             done();
@@ -116,7 +115,56 @@ describe('nox.deepClone', () => {
             done();
          });
       });
+      describe('- object cloning with modifications', () => {
+         it('should change the clone to contain the values from the mods object',(done)=>{
+            var source = {name:"Johan"};
+            var mods = {name:"Sue"};
+            var clone = deepClone(source,mods);
+            clone.name.should.equal(mods.name);
+         });
+         it('should add the mods keys to the clone',(done)=>{
+            var source = {name:"Johan"};
+            var mods = {surname:"Jordaan"};
+            var clone = deepClone(source,mods);
+            clone.name.should.equal(source.name);
+            expect(clone.surname).to.exist;
+            clone.surname.should.equal(mods.surname);
+         });
+         it('should apply the modifications ercursavely',(done)=>{
+            var source = {
+               author:"Johan",
+               books: [
+                  {name:"The one"},
+                  {name:"The other one"}
+               ],
+               address:{
+                  country:"South AFrica"
+               }
+            };
+            var mods = {
+               author:{name:"Johan",surname:"Jordaan"},
+               address:{
+                  city: "Sydney",
+                  country:"Australia"
+               },
+            };
+            var target = {
+               author:{name:"Johan",surname:"Jordaan"},
+               books: [
+                  {name:"The one"},
+                  {name:"The other one"}
+               ],
+               address:{
+                  city: "Sydney",
+                  country:"Australia"
+               }
+            };
 
+            var clone = deepClone(source,mods);
+            deepCompare(clone,target),should.equal(true);
+
+         });
+      });
 
    });
 });
