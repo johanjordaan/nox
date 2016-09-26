@@ -12,6 +12,10 @@ describe('deepCompare', () => {
          deepCompare("A","B").should.equal(false);
          done();
       });
+      it('should detect type differences', (done) => {
+         deepCompare("A",10).should.equal(false);
+         done();
+      });
       it('should detect string equality', (done) => {
          deepCompare("A","A").should.equal(true);
          done();
@@ -21,6 +25,10 @@ describe('deepCompare', () => {
    describe("comparing numbers", () => {
       it('should detect number differences', (done) => {
          deepCompare(10.84,-2).should.equal(false);
+         done();
+      });
+      it('should detect type differences', (done) => {
+         deepCompare(9.88,"9.88").should.equal(false);
          done();
       });
       it('should detect number equality', (done) => {
@@ -34,6 +42,10 @@ describe('deepCompare', () => {
          deepCompare(true,false).should.equal(false);
          done();
       });
+      it('should detect type differences', (done) => {
+         deepCompare(true,{}).should.equal(false);
+         done();
+      });
       it('should detect boolean equality', (done) => {
          deepCompare(false,false).should.equal(true);
          done();
@@ -43,6 +55,10 @@ describe('deepCompare', () => {
    describe("comparing functions", () => {
       it('should detect function differences', (done) => {
          deepCompare(_.isString,_.isObject).should.equal(false);
+         done();
+      });
+      it('should detect type differences', (done) => {
+         deepCompare(deepCompare,[]).should.equal(false);
          done();
       });
       it('should detect function equality', (done) => {
@@ -62,6 +78,10 @@ describe('deepCompare', () => {
       });
       it('should detect array differences (content types)', (done) => {
          deepCompare(["1",2,3],[1,2,3]).should.equal(false);
+         done();
+      });
+      it('should detect array differences (types)', (done) => {
+         deepCompare(["1",2,3],{}).should.equal(false);
          done();
       });
       it('should detect array equality', (done) => {
@@ -87,6 +107,10 @@ describe('deepCompare', () => {
             {name:"Johan",age:600},
             {name:"Johan",age:"600"}
          ).should.equal(false);
+         done();
+      });
+      it('should detect object differences (types)', (done) => {
+         deepCompare({},[1,2,3]).should.equal(false);
          done();
       });
       it('should detect object equality', (done) => {
