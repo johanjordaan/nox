@@ -77,10 +77,46 @@ describe('nox.deepClone', () => {
       });
 
       describe('- array cloning', () => {
+         var source = [1,2,3,{name:"Johan"},[3,2,1]];
+         var clone = deepClone(source);
+
+         it('should return a copy of an array', (done) => {
+            deepCompare(source,clone).should.equal(true);
+            done();
+         });
+
+         it('should not retain a ref to the original array', (done) => {
+            source = [2,4,5];
+            deepCompare(source,clone).should.equal(false);
+            done();
+         });
       });
 
       describe('- object cloning', () => {
+         var source = {
+            name: "Husband",
+            wife: {name:"Wife"},
+            children: [{
+               name: "First"
+            },{
+               name: "Second"
+            }]
+         };
+         var clone = deepClone(source);
+
+
+         it('should return a copy of an object', (done) => {
+            deepCompare(source,clone).should.equal(true);
+            done();
+         });
+
+         it('should not retain a ref to the original object', (done) => {
+            source = {};
+            deepCompare(source,clone).should.equal(false);
+            done();
+         });
       });
+
 
    });
 });
