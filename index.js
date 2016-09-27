@@ -2,6 +2,7 @@
 
 var _ = require('underscore');
 
+var lcg_rnd = require('lcg-rnd');
 var deepClone = require('./deepClone');
 
 
@@ -198,9 +199,9 @@ nox.rnd = (input) => {
          var diff = max - min;
          _.each(_.range(itterations), (i)=>{
             if(integer)
-               value += _.random(min,max);
+               value += lcg_rnd.rndIntBetween(min,max);
             else
-              value += min + diff*Math.random();
+              value += min + diff*lcg_rnd.random();
          });
          value = value/itterations;
          return value;
@@ -255,7 +256,7 @@ nox.select = (input) => {
 
          var retArr = [];
          _.each(_.range(0,count), (i) => {
-            var r = Math.random();
+            var r = lcg_rnd.random();
             var totalProbability = 0;
             var found = false;
 

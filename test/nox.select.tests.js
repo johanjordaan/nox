@@ -4,6 +4,8 @@ var _ = require('underscore');
 var should = require('chai').should();
 var expect = require('chai').expect;
 
+var lcg_rnd = require('lcg-rnd');
+
 var test_utils = require("./test_utils");
 var nox = require('../');
 
@@ -51,15 +53,17 @@ describe('nox.select', () => {
          done();
       });
 
-      test_utils.fixRandomValues([0,0.5,1]);
-      var result = d.run();
 
       it('should return a result with length of(3);', (done) => {
+         lcg_rnd._fixRandomValues([0,0.5,1]);
+         var result = d.run();
          result.length.should.equal(3);
          done();
       });
 
       it('should return an array with values A,B,D based on(0);,0.5 and(1); random values', (done) => {
+         lcg_rnd._fixRandomValues([0,0.5,1]);
+         var result = d.run();
          var expected = ['A','B','D'];
          _.each(_.range(3), (i) => {
             result[i].should.equal(expected[i]);
@@ -77,7 +81,7 @@ describe('nox.select', () => {
       });
 
       it('should select a single item from the(list); (not as an array)', (done) => {
-         test_utils.fixRandomValue(0.7);
+         lcg_rnd._fixRandomValue(0.7);
          e.run().should.equal('C');
          done();
       });
@@ -102,15 +106,16 @@ describe('nox.select', () => {
          }),
       });
 
-      var a = nox.select({
-         count: 2,
-         values: [alien,female,male],
-      });
-
-      test_utils.fixRandomValues([1,0.5,0.5,1]);
-      var result = a.run();
 
       it('should return template instances based on the random numbers supplied', (done) => {
+         var a = nox.select({
+            count: 2,
+            values: [alien,female,male],
+         });
+
+         lcg_rnd._fixRandomValues([1,0.5,0.5,1]);
+         var result = a.run();
+
          result[0].name.should.equal('Joe');
          result[1].name.should.equal('Ruth');
          done();
@@ -132,10 +137,11 @@ describe('nox.select', () => {
          }),
       });
 
-      test_utils.fixRandomValues([0.5,0.5,1]);
-      var result = r.run();
 
       it('should get the list of values from the method and select a random one from the list;', (done) => {
+         lcg_rnd._fixRandomValues([0.5,0.5,1]);
+         var result = r.run();
+
          result.length.should.equal(2);
          result[0].should.equal('Y');
          result[1].should.equal('Z');

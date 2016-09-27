@@ -3,22 +3,11 @@
 var should = require('chai').should();
 var expect = require('chai').expect;
 
+var lcg_rnd = require('lcg-rnd');
+
 var nox = require('../');
 
-var saved_random = Math.random;
-
-var fix_random_value = (value) => {
-   Math.random = () => {
-      return value;
-   };
-};
-
 describe('nox.rnd', () => {
-   afterEach((done) => {
-      Math.random = saved_random;
-      done();
-   });
-
    describe('- basic uasge : ', (done) => {
       var c = nox.rnd({
          min: 1,
@@ -51,13 +40,13 @@ describe('nox.rnd', () => {
          done();
       });
 
-      it('should set the normal flag to false (deafult is a flat distribution)', (done) => {
+      it('should set the normal flag to false (default is a flat distribution)', (done) => {
          d.normal.should.equal(false);
          done();
       });
 
       it('should return the value when it is run', (done) => {
-         fix_random_value(1);
+         lcg_rnd._fixRandomValue(1);
          var cResult = c.run();
          cResult.should.equal(6);
          done();
@@ -92,7 +81,7 @@ describe('nox.rnd', () => {
       });
 
       it('should return the value when it is run', (done) => {
-         fix_random_value(0);
+         lcg_rnd._fixRandomValue(0);
          var cResult = c.run();
          cResult.should.equal(15);
          done();
@@ -123,21 +112,21 @@ describe('nox.rnd', () => {
       });
 
       it('should return the minimum on a random 0', (done) => {
-         fix_random_value(0);
+         lcg_rnd._fixRandomValue(0);
          var r = c.run();
          r.should.equal(0.5);
          done();
       });
 
       it('should return the maximum on a random 1', (done) => {
-         fix_random_value(1);
+         lcg_rnd._fixRandomValue(1);
          var r = c.run();
          r.should.equal(1.25);
          done();
       });
 
       it('should return the mid value on a random .5', (done) => {
-         fix_random_value(.5);
+         lcg_rnd._fixRandomValue(.5);
          var r = c.run();
          r.should.equal(0.5 + (1.25-0.5)/2);
          done();
@@ -153,21 +142,21 @@ describe('nox.rnd', () => {
       });
 
       it('should return the minimum on a random 0', (done) => {
-         fix_random_value(0);
+         lcg_rnd._fixRandomValue(0);
          var r = c.run();
          r.should.equal -3.5;
          done();
       });
 
       it('should return the maximum on a random 1', (done) => {
-         fix_random_value(1);
+         lcg_rnd._fixRandomValue(.5);
          var r = c.run();
          r.should.equal(99);
          done();
       });
 
       it('should return the mid value on a random .5', (done) => {
-         fix_random_value(.5);
+         lcg_rnd._fixRandomValue(.5);
          var r = c.run();
          r.should.equal -3.5 + (99+3.5)/2;
          done();

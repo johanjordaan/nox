@@ -4,6 +4,8 @@ var should = require('chai').should();
 var expect = require('chai').expect;
 var _ = require('underscore');
 
+var lcg_rnd = require('lcg-rnd');
+
 var test_utils = require("./test_utils");
 var nox = require('../');
 
@@ -236,10 +238,10 @@ describe('nox.extendTemplate', () => {
          done();
       });
 
-      test_utils.fixRandomValue(1);
-      var child = nox.constructTemplate(childTemplate);
-
       it('should return the values from the child template and ones derived from base', (done) => {
+         lcg_rnd._fixRandomValue(1);
+         var child = nox.constructTemplate(childTemplate);
+
          child.type.value.should.equal('childType');
          child.childField.should.equal('child specific field');
          child.age.should.equal(80);

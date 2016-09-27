@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/johanjordaan/nox#readme",
   "dependencies": {
+    "lcg-rnd": "0.0.8",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
