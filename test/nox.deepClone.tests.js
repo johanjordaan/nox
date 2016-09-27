@@ -124,6 +124,14 @@ describe('nox.deepClone', () => {
             clone.name.should.equal(mods.name);
             done();
          });
+         it('should remove fields if specified in modifications',(done)=>{
+            var source = {name:"Johan",surname:"Jordaan"};
+            var mods = {surname:"_remove"};
+            var clone = deepClone(source,mods);
+            clone.name.should.equal(source.name);
+            expect(clone.surname).to.not.exist;
+            done();
+         });
          it('should add the mods keys to the clone',(done)=>{
             var source = {name:"Johan"};
             var mods = {surname:"Jordaan"};
