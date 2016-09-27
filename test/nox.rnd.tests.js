@@ -142,23 +142,23 @@ describe('nox.rnd', () => {
       });
 
       it('should return the minimum on a random 0', (done) => {
-         lcg_rnd._fixRandomValue(0);
+         lcg_rnd._fixRandomValues([0,0,0]);
          var r = c.run();
-         r.should.equal -3.5;
+         r.should.equal(-3.5);
          done();
       });
 
       it('should return the maximum on a random 1', (done) => {
-         lcg_rnd._fixRandomValue(.5);
+         lcg_rnd._fixRandomValues([1,1,1]);
          var r = c.run();
          r.should.equal(99);
          done();
       });
 
       it('should return the mid value on a random .5', (done) => {
-         lcg_rnd._fixRandomValue(.5);
+         lcg_rnd._fixRandomValues([.5,.5,.5]);
          var r = c.run();
-         r.should.equal -3.5 + (99+3.5)/2;
+         r.should.equal(-3.5 + (99+3.5)/2);
          done();
       });
    });
