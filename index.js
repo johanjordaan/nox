@@ -19,16 +19,6 @@ nox.isMethod = (object) => {
    return object._noxMethod == true;
 };
 
-
-
-nox.probability = (probability,item) => {
-   var retVal = {
-      probability: probability,
-      item: item,
-   };
-  return retVal;
-};
-
 nox.isMethodValid = (method) => {
    if(method._noxErrors.length > 0) return false;
 
@@ -101,39 +91,8 @@ nox.constructTemplate = (template, parent, index) => {
   return retVal;
 };
 
-nox.extendFields = (sourceTemplate, properties, directives) => {
-   _.each(_.keys(properties), (key) => {
-      // If the key does not exist in the source or (allows for new keys to be aded)
-      // the properties value is not an object (allows methods to be overwritten by direct assignemnts)
-      // the ret_val is not an object (allows overriding of direct value assignements)
-      //   then simply deep_clone key from the parameters
-      //
-      //
-      if(directives !== undefined && directives.remove && _.contains(directives.remove,key))
-        delete(sourceTemplate[key]);
-      else {
-         var propertiesClone = deepClone(properties[key]);
-
-
-
-         /*if(sourceTemplate[key] === undefined
-            || !_.isObject(properties[key])
-            || !_.isObject(sourceTemplate[key])
-            || nox.isMethod(properties[key])) {
-            sourceTemplate[key] = deepClone(properties[key]);
-         } else {
-            nox.extendFields(sourceTemplate[key],properties[key]);
-         }*/
-      }
-   });
-};
-
-nox.extendTemplate = (sourceTemplate,name,properties,directives) => {
-   //First copy the source_teplate as is
-   //
-   var newTemplate = deepClone(sourceTemplate,directives);
-   nox.extendFields(newTemplate,properties,directives);
-
+nox.extendTemplate = (sourceTemplate,name,properties) => {
+   var newTemplate = deepClone(sourceTemplate,properties);
    return nox.createTemplate(name,newTemplate);
 };
 
@@ -190,6 +149,14 @@ nox.const = (input) => {
          var value = nox.resolve(this.value,targetObject);
          return value;
       };
+   };
+  return retVal;
+};
+
+nox.probability = (probability,item) => {
+   var retVal = {
+      probability: probability,
+      item: item,
    };
   return retVal;
 };

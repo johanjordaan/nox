@@ -7,7 +7,7 @@ var _ = require('underscore');
 var test_utils = require("./test_utils");
 var nox = require('../');
 
-describe('nox.create_template', () => {
+describe('nox.createTemplate', () => {
    describe('- basic usage : ', () => {
       var testTemplate = nox.createTemplate('testTemplate', {
          someField : nox.const({
@@ -50,10 +50,10 @@ describe('nox.create_template', () => {
     #
     #  nox.is_template_valid(valid_template).should.equal true
 */
-describe('nox.construct_template', () => {
+describe('nox.constructTemplate', () => {
    describe('- basic usage : ', () => {
 
-      var parentTemplate = nox.createTemplate('parent_template', {
+      var parentTemplate = nox.createTemplate('parentTemplate', {
          parentVal: nox.const({
             value: 'parentValue',
          }),
@@ -90,7 +90,7 @@ describe('nox.construct_template', () => {
          done();
       });
 
-      it('should set _index to the provided index (3)', (done) => {
+      it('should set _index to the provided index', (done) => {
          testInstance._index.should.equal(3);
          done();
       });
@@ -156,7 +156,7 @@ describe('nox.construct_template', () => {
 });
 
 
-describe('nox.extend_template', () => {
+describe('nox.extendTemplate', () => {
    describe('- basic usage (using the actual template class as input) : ', () => {
       var baseTemplate = nox.createTemplate('baseTemplate', {
          name: nox.const({
@@ -179,7 +179,7 @@ describe('nox.extend_template', () => {
          type: {
             value: 'childType'                    // Overriding existing field's parameters
          },
-         child_field: nox.const({                   // Adding new field
+         childField: nox.const({                   // Adding new field
             value: 'child specific field'
          }),
          age: nox.rnd({                             // Override the function
@@ -210,8 +210,8 @@ describe('nox.extend_template', () => {
       });
 
       it('should add any new fields from the child template ', (done) => {
-         expect(childTemplate.child_field).to.exist;
-         childTemplate.child_field.value.should.equal('child specific field');
+         expect(childTemplate.childField).to.exist;
+         childTemplate.childField.value.should.equal('child specific field');
          done();
       });
 
@@ -240,7 +240,7 @@ describe('nox.extend_template', () => {
       var child = nox.constructTemplate(childTemplate);
 
       it('should return the values from the child template and ones derived from base', (done) => {
-         child.type.should.equal('childType');
+         child.type.value.should.equal('childType');
          child.childField.should.equal('child specific field');
          child.age.should.equal(80);
          done();
