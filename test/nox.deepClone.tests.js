@@ -115,12 +115,14 @@ describe('nox.deepClone', () => {
             done();
          });
       });
+
       describe('- object cloning with modifications', () => {
          it('should change the clone to contain the values from the mods object',(done)=>{
             var source = {name:"Johan"};
             var mods = {name:"Sue"};
             var clone = deepClone(source,mods);
             clone.name.should.equal(mods.name);
+            done();
          });
          it('should add the mods keys to the clone',(done)=>{
             var source = {name:"Johan"};
@@ -129,8 +131,9 @@ describe('nox.deepClone', () => {
             clone.name.should.equal(source.name);
             expect(clone.surname).to.exist;
             clone.surname.should.equal(mods.surname);
+            done();
          });
-         it('should apply the modifications ercursavely',(done)=>{
+         it('should apply the modifications rcursavely',(done)=>{
             var source = {
                author:"Johan",
                books: [
@@ -161,8 +164,8 @@ describe('nox.deepClone', () => {
             };
 
             var clone = deepClone(source,mods);
-            deepCompare(clone,target),should.equal(true);
-
+            deepCompare(clone,target).should.equal(true);
+            done();
          });
       });
 
