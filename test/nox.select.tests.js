@@ -67,11 +67,11 @@ describe('nox.select', () => {
          done();
       });
 
-      var e = nox.selectOne({
+      var e = nox.select.one({
          values: list,
       },true);
 
-      it('should set the default returnOne flag to true if using selectOne', (done) => {
+      it('should set the default returnOne flag to true if using select.one', (done) => {
          e.returnOne.should.equal(true);
          done();
       });
@@ -85,19 +85,19 @@ describe('nox.select', () => {
 
    describe('- basic usage (select from(list); of templates, the templates must be constructed) flat distribution', () => {
       var male = nox.createTemplate('male', {
-         name : nox.selectOne({
+         name : nox.select.one({
             values : ['John','Joe','Peter']
          }),
       });
 
       var female = nox.createTemplate('female', {
-         name : nox.selectOne({
+         name : nox.select.one({
             values : ['Jane','Sue','Sandra','Ruth']
          }),
       });
 
       var alien = nox.createTemplate('alien', {
-         name : nox.selectOne({
+         name : nox.select.one({
             values : ['Xi','Yi','Zi','Zoooo']
          }),
       });

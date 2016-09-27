@@ -105,9 +105,9 @@ nox.deNox = (object) => {
 
       if(_.isObject(object)) {
          delete object._parent;
-         delete object._nox_errors;
+         delete object._noxErrors;
          delete object._index;
-         delete object._nox_template_name;
+         delete object._noxTemplateName;
       }
 
       _.each(_.keys(object),(key)=>{
@@ -124,13 +124,13 @@ nox.resolve = (parameter,targetObject) => {
    }
 };
 
-nox.checkField = (field, field_name, errors) => {
+nox.checkField = (field, fieldName, errors) => {
    if(field === undefined)
-      errors.push(`Required field [${field_name}] is missing.`);
+      errors.push(`Required field [${fieldName}] is missing.`);
 };
 
-nox.checkFields = (source, field_list) => {
-   _.each(field_list, (field) => {
+nox.checkFields = (source, fieldList) => {
+   _.each(fieldList, (field) => {
       nox.checkField(source[field],field,source._noxErrors);
    });
 
@@ -149,14 +149,6 @@ nox.const = (input) => {
          var value = nox.resolve(this.value,targetObject);
          return value;
       };
-   };
-  return retVal;
-};
-
-nox.probability = (probability,item) => {
-   var retVal = {
-      probability: probability,
-      item: item,
    };
   return retVal;
 };
@@ -313,7 +305,7 @@ nox.select = (input) => {
 };
 
 
-nox.selectOne = (input) => {
+nox.select.one = (input) => {
    input.count = 1;
    input.returnOne = true;
    return nox.select(input);
