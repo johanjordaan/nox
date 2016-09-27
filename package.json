@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha test",
     "testDeepClone": "mocha test/nox.deepClone.tests.js",
-    "testDeepCompare": "mocha test/nox.deepCompare.tests.js"
+    "testDeepCompare": "mocha test/nox.deepCompare.tests.js",
+    "coverage": "istanbul cover node_modules/.bin/_mocha test --include *.js --include **/*.js"
   },
   "repository": {
     "type": "git",
