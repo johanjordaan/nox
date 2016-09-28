@@ -66,7 +66,8 @@ describe('nox.const', () => {
       var c = nox.const({});
       var cResult = c.run();
 
-      it('should return an error list if the required fields (value) is not specified', (done) => {
+
+      it('should return an error list if the required fields value is not specified', (done) => {
          cResult.should.be.a('Array');
          cResult.length.should.equal(1);
          done();

@@ -42,7 +42,12 @@ nox.isTemplateValid = (template) => {
          if(!nox.isMethodValid(template[key]))
             return false;
    });
-   return true;
+
+   // TODO : Can this be done better? Seems like overkill to create an instance
+   //
+   var instance = nox.constructTemplate(template);
+
+   return instance._noxErrors.length == 0;
 };
 
 nox.templates = {};
@@ -125,33 +130,18 @@ nox.resolve = (parameter,targetObject) => {
    }
 };
 
-nox.checkField = (field, fieldName, errors) => {
-   if(field === undefined)
-      errors.push(`Required field [${fieldName}] is missing.`);
-};
-
-nox.checkFields = (source, fieldList) => {
+nox.checkFields = (source, fieldList, targetObject) => {
    _.each(fieldList, (field) => {
-      nox.checkField(source[field],field,source._noxErrors);
+      if(source[field] === undefined) {
+         var error = `Required field [${field}] is missing.`;
+         source._noxErrors.push(error);
+         if(targetObject !== undefined) {
+            targetObject._noxErrors.push(error);
+         }
+      }
    });
 
-  return source._noxErrors.length > 0;
-};
-
-nox.const = (input) => {
-   var retVal = new function() {
-      this._noxMethod = true;
-      this._noxErrors = [];
-      this.value = input.value;
-      this.run = (targetObject) => {
-         if(nox.checkFields(this,['value']))
-           return this._noxErrors;
-
-         var value = nox.resolve(this.value,targetObject);
-         return value;
-      };
-   };
-  return retVal;
+   return source._noxErrors.length > 0;
 };
 
 nox.method = (input) => {
@@ -160,7 +150,7 @@ nox.method = (input) => {
       this._noxErrors = [];
       this.method = input.method;
       this.run = (targetObject) => {
-         if(nox.checkFields(this,['method']))
+         if(nox.checkFields(this,['method'],targetObject))
             return this._noxErrors;
 
          var method = nox.resolve(this.method,targetObject);
@@ -168,6 +158,22 @@ nox.method = (input) => {
       };
    };
 
+   return retVal;
+};
+
+nox.const = (input) => {
+   var retVal = new function() {
+      this._noxMethod = true;
+      this._noxErrors = [];
+      this.value = input.value;
+      this.run = (targetObject) => {
+         if(nox.checkFields(this,['value'],targetObject))
+            return this._noxErrors;
+
+         var value = nox.resolve(this.value,targetObject);
+         return value;
+      };
+   };
    return retVal;
 };
 
@@ -184,7 +190,7 @@ nox.rnd = (input) => {
       this.normal = input.normal;
       this.integer = input.integer;
       this.run = (targetObject) => {
-         if(nox.checkFields(this,['min','max','normal','integer']))
+         if(nox.checkFields(this,['min','max','normal','integer'],targetObject))
             return this._noxErrors;
 
          var min = nox.resolve(this.min, targetObject);
@@ -210,7 +216,6 @@ nox.rnd = (input) => {
    return retVal;
 };
 
-
 nox.rnd.int = (input) => {
    input.integer = true;
    return nox.rnd(input);
@@ -220,7 +225,6 @@ nox.rnd.normal = (input) => {
    input.normal = true;
    return nox.rnd(input);
 };
-
 
 nox.select = (input) => {
    if(input.count === undefined) input.count = 1;
@@ -233,7 +237,8 @@ nox.select = (input) => {
       this.values = input.values;
       this.returnOne = input.returnOne;
       this.run = (targetObject) => {
-         if(nox.checkFields(this,['values'])) return this._noxErrors;
+         if(nox.checkFields(this,['values'],targetObject))
+            return this._noxErrors;
 
          var count = nox.resolve(this.count, targetObject);
          var returnOne = nox.resolve(this.return_one, targetObject);
@@ -271,7 +276,7 @@ nox.select = (input) => {
                   found = true;
                   if(item.item && item.probability) {
                      if(nox.isTemplate(item.item)) {
-                        retArr.push(nox.construct_template(item.item,targetObject,i));
+                        retArr.push(nox.constructTemplate(item.item,targetObject,i));
                         found = true;
                      } else {
                         if(_.isString(item.item) && _.contains(_.keys(nox.templates),item.item)) {

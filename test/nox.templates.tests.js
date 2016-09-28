@@ -34,24 +34,35 @@ describe('nox.createTemplate', () => {
    });
 });
 
-/*describe('nox.is_template_validate', () => {
-#  describe('- basic usage : ', () => {
-#    x_template = nox.create_template 'x_template',
-#      name : nox.const
-#        value : nox.const
-#          xxx : "What is this"
-#      surname : nox.rnd
-#        no_max : 10
-#
-#    it('should detect errors on any level of the template', () => {
-#      nox.is_template_valid(x_template).should.equal false
-#
-    #it('should detect a valid template', () => {
-    #  valid_template  = nox.create_template 'valid',
-    #    name : ("Hallo");
-    #
-    #  nox.is_template_valid(valid_template).should.equal true
-*/
+describe('nox.isTemplateValidate', () => {
+   describe('- basic usage : ', () => {
+      var xTemplate = nox.createTemplate('xTemplate', {
+         name: nox.const({
+            value: nox.const({
+               xxx: "What is this",
+            }),
+         }),
+         surname : nox.rnd({
+            no_max: 10,
+         }),
+      });
+
+      it('should detect errors on any level of the template', (done) => {
+         nox.isTemplateValid(xTemplate).should.equal(false);
+         done();
+      });
+
+      it('should detect a valid template', (done) => {
+         var validTemplate  = nox.createTemplate('valid', {
+           name : ("Hallo"),
+         });
+
+         nox.isTemplateValid(validTemplate).should.equal(true);
+         done();
+      });
+   });
+});
+
 describe('nox.constructTemplate', () => {
    describe('- basic usage : ', () => {
 
