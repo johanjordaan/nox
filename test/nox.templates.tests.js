@@ -55,13 +55,14 @@ describe('nox.deNox', () => {
             b: nox.rnd({
                max: 10,
             }),
+            range:[
+               nox.rnd({max: 6}),nox.rnd({max: 6})
+            ]
          },
       });
       var i = nox.constructTemplate(t);
-      console.log(i);
       nox.deNox(i);
       _.keys(i).should.not.contain(nox._noxKeys);
-      console.log(i);
       done();
    });
 

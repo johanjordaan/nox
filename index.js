@@ -80,18 +80,24 @@ nox.constructTemplate = (template, parent, index) => {
       }
    }
 
-   _.each(_.keys(template), (key) => {
-      // Skip internal fields
-      //
-      if(key in ['_noxTemplate']){
-      } else {
-         if(nox.isMethod(template[key]))
-            retVal[key] = template[key].run(retVal);
-         else
-           retVal[key] = deepClone(template[key]);
-      }
+   var resolve = (source,obj) => {
+      //console.log("-------------------<>");
+      //console.log(source);
+      //console.log(obj);
+      //console.log(retVal);
+      //console.log("-----------------------------<>");
 
-   });
+      // If it is an object the iterate over the keys and resolve each as
+      // either anox method or a base type
+      if(_.isObject(source) && !nox.isMethod(source)) {
+         _.each(_.keys(source), (key) => {
+            obj[key] = nox.resolve(source[key],retVal);
+            resolve(source[key],obj[key]);
+         });
+      }
+      
+   };
+   resolve(template,retVal);
 
   return retVal;
 };
