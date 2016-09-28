@@ -16,17 +16,6 @@ nox.isMethod = (object) => {
    return object._noxMethod == true;
 };
 
-nox.isMethodValid = (method) => {
-   if(method._noxErrors.length > 0) return false;
-
-   _.each(_.keys(method),(key) => {
-      if(nox.isMethod(method[key]))
-        if(!nox.isMethodValid(method[key]))
-          return false;
-   });
-   return true;
-};
-
 nox.isTemplate = (object) => {
    if(object === undefined) return false;
    if(!_.isObject(object)) return false;
@@ -35,12 +24,6 @@ nox.isTemplate = (object) => {
 
 nox.isTemplateValid = (template) => {
    if(!nox.isTemplate(template)) return false;
-
-   _.each(_.keys(template),(key)=>{
-      if(nox.isMethod(template[key]))
-         if(!nox.isMethodValid(template[key]))
-            return false;
-   });
 
    // TODO : Can this be done better? Seems like overkill to create an instance
    //
@@ -81,21 +64,12 @@ nox.constructTemplate = (template, parent, index) => {
    }
 
    var resolve = (source,obj) => {
-      //console.log("-------------------<>");
-      //console.log(source);
-      //console.log(obj);
-      //console.log(retVal);
-      //console.log("-----------------------------<>");
-
-      // If it is an object the iterate over the keys and resolve each as
-      // either anox method or a base type
       if(_.isObject(source) && !nox.isMethod(source)) {
          _.each(_.keys(source), (key) => {
             obj[key] = nox.resolve(source[key],retVal);
             resolve(source[key],obj[key]);
          });
       }
-      
    };
    resolve(template,retVal);
 

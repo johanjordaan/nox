@@ -3,12 +3,13 @@
 var should = require('chai').should();
 var expect = require('chai').expect;
 
+var test_utils = require('./test_utils');
 var lcg_rnd = require('lcg-rnd');
 
 var nox = require('../');
 
 describe('nox.rnd', () => {
-   describe('- basic uasge : ', (done) => {
+   describe('- basic usage : ', (done) => {
       var c = nox.rnd({
          min: 1,
          max: 6,
@@ -51,7 +52,41 @@ describe('nox.rnd', () => {
          cResult.should.equal(6);
          done();
       });
+
    });
+
+   describe('- nox.rnd.int : ', () => {
+      var d = nox.rnd.int({
+         max: 20,
+      });
+
+      it('should default the integer parameter to true',(done) => {
+         d.integer.should.equal(true);
+         done();
+      });
+
+      it('should return a random integer',(done) => {
+         var r = d.run();
+         test_utils.isInteger(r).should.equal(true);
+         done();
+      });
+   });
+
+
+   describe('- nox.rnd.normal : ', () => {
+      var d = nox.rnd.normal({
+         max: 20,
+      });
+
+      it('should default the normal parameter to true',(done) =>{
+         d.normal.should.equal(true);
+         done();
+      });
+
+
+   });
+
+
 
    describe('- recursive usage : ', () => {
       var c = nox.rnd({
@@ -135,10 +170,9 @@ describe('nox.rnd', () => {
    });
 
    describe('- statistical measures - normal distribution : ', () => {
-      var c = nox.rnd({
+      var c = nox.rnd.normal({
          min: -3.5,
          max: 99,
-         normal: true,
       });
 
       it('should return the minimum on a random 0', (done) => {
