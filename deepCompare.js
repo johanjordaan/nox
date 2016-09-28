@@ -31,7 +31,7 @@ var _deepCompare = (source, target, eq) => {
       if(s.length !== t.length) return false;
 
       return _.every(
-         _.map(_.range(s.lenth),(i)=>{
+         _.map(_.range(s.length),(i)=>{
             return _deepCompare(source[i],target[i],true);
          })
       );
