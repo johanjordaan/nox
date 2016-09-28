@@ -42,7 +42,7 @@ describe('nox.const', () => {
          })
       });
 
-      it('should set the _nox_method flag on the levels', (done) => {
+      it('should set the _noxMethod flag on the levels', (done) => {
          c._noxMethod.should.equal(true);
          c.value._noxMethod.should.equal(true);
          c.value.value._noxMethod.should.equal(true);

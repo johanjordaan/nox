@@ -34,34 +34,105 @@ describe('nox.createTemplate', () => {
    });
 });
 
-describe('nox.isTemplateValidate', () => {
-   describe('- basic usage : ', () => {
-      var xTemplate = nox.createTemplate('xTemplate', {
-         name: nox.const({
-            value: nox.const({
-               xxx: "What is this",
+
+describe('nox.deNox', () => {
+   it('should remove the internal nox fields from a nox create object',(done)=>{
+      var t = nox.createTemplate('test',{name:nox.const({value:"x"})});
+      var i = nox.constructTemplate(t);
+      nox.deNox(i);
+      _.keys(i).should.not.contain(nox._noxKeys);
+      done();
+   });
+   it('should remove the internal nox fields from a nox create object (recursively)',(done)=>{
+      var t = nox.createTemplate('test2',{
+         name:nox.const({
+            value:"x",
+         }),
+         val:{
+            a: nox.rnd({
+               max: 10,
             }),
-         }),
-         surname : nox.rnd({
-            no_max: 10,
-         }),
+            b: nox.rnd({
+               max: 10,
+            }),
+         },
       });
+      var i = nox.constructTemplate(t);
+      console.log(i);
+      nox.deNox(i);
+      _.keys(i).should.not.contain(nox._noxKeys);
+      console.log(i);
+      done();
+   });
 
-      it('should detect errors on any level of the template', (done) => {
-         nox.isTemplateValid(xTemplate).should.equal(false);
-         done();
-      });
-
-      it('should detect a valid template', (done) => {
-         var validTemplate  = nox.createTemplate('valid', {
-           name : ("Hallo"),
-         });
-
-         nox.isTemplateValid(validTemplate).should.equal(true);
-         done();
-      });
+   it('should remove the internal nox fields from an array of nox created objecta',(done)=>{
+      var t = nox.createTemplate('test',{name:nox.const({value:"x"})});
+      var i = _.map(_.range(10),(i)=>{return(nox.constructTemplate(t));});
+      nox.deNox(i);
+      _.keys(i).should.not.contain(nox._noxKeys);
+      done();
    });
 });
+
+describe('nox.isTemplate', () => {
+   it('should detect structures that are nox templates',(done) =>{
+      var template = nox.createTemplate('template',{});
+      nox.isTemplate(template).should.equal(true);
+      done();
+   });
+
+   it('should detect structures that are not nox templates (does not containe _noxMethod)',(done) =>{
+      nox.isTemplate({}).should.equal(false);
+      done();
+   });
+
+   it('should detect structures that are not nox templates (undefined)',(done) =>{
+      nox.isTemplate(undefined).should.equal(false);
+      done();
+   });
+
+   it('should detect structures that are not nox templates (non objects)',(done) =>{
+      nox.isTemplate([]).should.equal(false);
+      done();
+   });
+});
+
+
+describe('nox.isTemplateValid', () => {
+
+   it('should detect an invalid template (undefined)',(done) => {
+      nox.isTemplateValid(undefined).should.equal(false);
+      done();
+   });
+
+
+   var xTemplate = nox.createTemplate('xTemplate', {
+      name: nox.const({
+         value: nox.const({
+            xxx: "What is this",
+         }),
+      }),
+      surname : nox.rnd({
+         no_max: 10,
+      }),
+   });
+
+   it('should detect errors on any level of the template', (done) => {
+      nox.isTemplateValid(xTemplate).should.equal(false);
+      done();
+   });
+
+   it('should detect a valid template', (done) => {
+      var validTemplate  = nox.createTemplate('valid', {
+        name : ("Hallo"),
+      });
+
+      nox.isTemplateValid(validTemplate).should.equal(true);
+      done();
+   });
+
+});
+
 
 describe('nox.constructTemplate', () => {
    describe('- basic usage : ', () => {

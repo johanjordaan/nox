@@ -8,11 +8,7 @@ var deepClone = require('./deepClone');
 
 var nox = {};
 
-nox.isTemplate = (object) => {
-   if(object === undefined) return false;
-   if(!_.isObject(object)) return false;
-   return object._noxTemplate;
-};
+
 
 nox.isMethod = (object) => {
    if(object === undefined) return false;
@@ -31,10 +27,13 @@ nox.isMethodValid = (method) => {
    return true;
 };
 
-nox.isTemplateValid = (template) => {
-   if(template === undefined) return false;
-   if(!_.isObject(template)) return false;
+nox.isTemplate = (object) => {
+   if(object === undefined) return false;
+   if(!_.isObject(object)) return false;
+   return(object._noxTemplate !== undefined);
+};
 
+nox.isTemplateValid = (template) => {
    if(!nox.isTemplate(template)) return false;
 
    _.each(_.keys(template),(key)=>{
@@ -102,20 +101,18 @@ nox.extendTemplate = (sourceTemplate,name,properties) => {
    return nox.createTemplate(name,newTemplate);
 };
 
+nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate'];
 nox.deNox = (object) => {
-   if(_.isArray(o)) {
+   if(_.isArray(object)) {
       _.each(object,(item)=>{
          nox.deNox(item);
       });
    } else {
-
       if(_.isObject(object)) {
-         delete object._parent;
-         delete object._noxErrors;
-         delete object._index;
-         delete object._noxTemplateName;
+         _.each(nox._noxKeys,(noxKey) =>{
+            delete object[noxKey];
+         });
       }
-
       _.each(_.keys(object),(key)=>{
          nox.deNox(object[key]);
       });
