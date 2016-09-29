@@ -71,6 +71,22 @@ describe('nox.select', () => {
 
 //----------------
 
+   describe('- selecting items based on specific probabiltes', () => {
+      var list = [
+         { item:"A", probability:.5},
+         { item:"B", probability:.25},
+         { item:"C", probability:.25},
+      ];
+      var pSel = nox.select.one({values:list});
+      it('should return the correct item based on the probabilties', (done) => {
+         lcg_rnd._fixRandomValues([.1,.62,.80]);
+         pSel.run().should.equal("A");
+         pSel.run().should.equal("B");
+         pSel.run().should.equal("C");
+         done();
+      });
+
+   });
 
 
 

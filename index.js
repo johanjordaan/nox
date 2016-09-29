@@ -234,9 +234,17 @@ nox.select = (input) => {
          if(count === 0 && !returnOne)
            return [];
 
-
-
-         var defaultProbability = 1/_.size(values);
+         // Convert values into prob structures if they are not already
+         //
+         if(values[0].probability === undefined) {
+            var defaultProbability = 1/_.size(values);
+            values = _.map(values,(item) => {
+               return {
+                  item: item,
+                  probability: defaultProbability,
+               };
+            });
+         };
 
          var retArr = [];
          _.each(_.range(0,count), (i) => {
@@ -247,35 +255,21 @@ nox.select = (input) => {
             _.each(values, (item) => {
                if(found) return;
 
-               var probability = defaultProbability;
-               if(item.probability) probability = item.probability;
-               totalProbability += probability;
+               totalProbability += item.probability;
 
                if(r<=totalProbability) {
                   found = true;
-                  if(item.item && item.probability) {
-                     if(nox.isTemplate(item.item)) {
-                        retArr.push(nox.constructTemplate(item.item,targetObject,i));
-                        found = true;
-                     } else {
-                        if(_.isString(item.item) && _.contains(_.keys(nox.templates),item.item)) {
-                           retArr.push(nox.constructTemplate(nox.templates[item.item],targetObject,i));
-                        } else {
-                           retArr.push(item.item);
-                        }
-                     }
+                  if(nox.isTemplate(item.item)) {
+                     retArr.push(nox.constructTemplate(item.item,targetObject,i));
+                     found = true;
                   } else {
-                     if(nox.isTemplate(item)) {
-                        retArr.push(nox.constructTemplate(item,targetObject,i));
+                     if(_.isString(item.item) && _.contains(_.keys(nox.templates),item.item)) {
+                        retArr.push(nox.constructTemplate(nox.templates[item.item],targetObject,i));
                      } else {
-                        if(_.isString(item) && _.contains(_.keys(nox.templates),item)) {
-                           retArr.push(nox.constructTemplate(nox.templates[item],targetObject,i));
-                        } else {
-                           retArr.push(item);
-                        }
+                        retArr.push(item.item);
                      }
                   }
-               }
+               };
             });
          });
 
