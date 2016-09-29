@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('underscore');
+var hash = require('object-hash');
 
 var lcg_rnd = require('lcg-rnd');
 var deepClone = require('./deepClone');
@@ -40,19 +41,13 @@ nox.createTemplate = (name, properties) => {
    return properties;
 };
 
-nox.constructTemplate = (template, parent, index, seed) => {
-   if(seed === undefined) {
-      seed = lcg_rnd.lcgParm.seed;
-   } else {
-      lcg_rnd.srand(seed);
-   }
+nox.constructTemplate = (template, parent, index, id) => {
    var retVal = {
       _parent: parent,
       _index: index,
       _noxErrors: [],
-      _seed: seed,
+      _id: { _seed: undefined, _hash: undefined },
    };
-
 
    if(template === undefined) {
       retVal._noxErrors.push("Cannot construct template with undefined template parameter.");
@@ -65,6 +60,21 @@ nox.constructTemplate = (template, parent, index, seed) => {
       if(template === undefined) {
          retVal._noxErrors.push("Cannot find template [" + templateStr + "].");
          return retVal;
+      }
+   }
+
+   if(id === undefined) {
+      retVal._id = {
+         _seed: lcg_rnd.lcgParm.seed,
+         _hash: hash(template),
+      };
+   } else {
+      if(hash(template) !== id._hash) {
+         retVal._noxErrors.push("Seed and hash does not match.");
+         return retVal;
+      } else {
+         retVal._id = deepClone(id);
+         lcg_rnd.srand(id._seed);
       }
    }
 
@@ -90,7 +100,7 @@ nox.extendTemplate = (sourceTemplate,name,properties) => {
    return nox.createTemplate(name,newTemplate);
 };
 
-nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate','_noxType','_seed'];
+nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate','_noxType','_id','_seed','_hash'];
 nox.deNox = (object) => {
    if(_.isArray(object)) {
       _.each(object,(item)=>{

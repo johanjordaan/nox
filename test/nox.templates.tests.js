@@ -143,11 +143,30 @@ describe('nox.constructTemplate', () => {
       });
 
       var t1 = nox.constructTemplate("t",undefined,undefined);
-      var t2 = nox.constructTemplate("t",undefined,undefined,t1._seed);
+      var t2 = nox.constructTemplate("t",undefined,undefined,t1._id);
 
       deepCompare(t1,t2).should.equal(true);
 
    });
+
+   describe(' on creating an instance using a seed', () =>{
+      var t = nox.createTemplate("t",{
+         val: nox.rnd({max:90}),
+      });
+      var t1 = nox.constructTemplate("t",undefined,undefined);
+
+
+      var tb = nox.createTemplate("t",{
+         val: nox.rnd({max:80}),
+      });
+      var t2 = nox.constructTemplate("t",undefined,undefined,t1._id);
+
+      t2._noxErrors[0].should.equal("Seed and hash does not match.");
+
+   });
+
+
+
 
 
    describe('- basic usage : ', () => {
