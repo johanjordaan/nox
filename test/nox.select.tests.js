@@ -69,8 +69,6 @@ describe('nox.select', () => {
 
    });
 
-//----------------
-
    describe('- selecting items based on specific probabiltes', () => {
       var list = [
          { item:"A", probability:.5},
@@ -85,8 +83,43 @@ describe('nox.select', () => {
          pSel.run().should.equal("C");
          done();
       });
-
    });
+
+   describe('- selecting items based on default/flat probabiltes', () => {
+      var list = ["A","B","C"];
+      var pSel = nox.select.one({values:list});
+      it('should return the correct item based on the probabilties', (done) => {
+         lcg_rnd._fixRandomValues([.2,1.0/3.0+0.001,.80]);
+         pSel.run().should.equal("A");
+         pSel.run().should.equal("B");
+         pSel.run().should.equal("C");
+         done();
+      });
+   });
+
+   describe('- selecting items that are string template names', () => {
+      var noxA = nox.createTemplate("noxA",{ name: "A"});
+      var noxB = nox.createTemplate("noxB",{ name: "B"});
+      var noxC = nox.createTemplate("noxC",{ name: "C"});
+
+      var list = [
+         { item:"noxA", probability:.5},
+         { item:"noxB", probability:.25},
+         { item:"noxC", probability:.25},
+      ];
+      var pSel = nox.select.one({values:list});
+      it('should return the correct item based on the probabilties', (done) => {
+         lcg_rnd._fixRandomValues([.1,.62,.80]);
+         pSel.run().name.should.equal("A");
+         pSel.run().name.should.equal("B");
+         pSel.run().name.should.equal("C");
+         done();
+      });
+   });
+
+
+
+   //----------------
 
 
 

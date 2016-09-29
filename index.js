@@ -11,13 +11,11 @@ var nox = {};
 
 
 nox.isMethod = (object) => {
-   if(object === undefined) return false;
    if(!_.isObject(object)) return false;
    return object._noxMethod == true;
 };
 
 nox.isTemplate = (object) => {
-   if(object === undefined) return false;
    if(!_.isObject(object)) return false;
    return(object._noxTemplate !== undefined);
 };
