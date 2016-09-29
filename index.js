@@ -64,8 +64,12 @@ nox.constructTemplate = (template, parent, index) => {
    var resolve = (source,obj) => {
       if(_.isObject(source) && !nox.isMethod(source)) {
          _.each(_.keys(source), (key) => {
-            obj[key] = nox.resolve(source[key],retVal);
-            resolve(source[key],obj[key]);
+            if(_.contains(nox._noxKeys,key)) {
+               obj[key] = source[key];
+            } else {
+               obj[key] = nox.resolve(source[key],retVal);
+               resolve(source[key],obj[key]);
+            }
          });
       }
    };
@@ -79,7 +83,7 @@ nox.extendTemplate = (sourceTemplate,name,properties) => {
    return nox.createTemplate(name,newTemplate);
 };
 
-nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate'];
+nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate','_noxType'];
 nox.deNox = (object) => {
    if(_.isArray(object)) {
       _.each(object,(item)=>{
@@ -97,12 +101,18 @@ nox.deNox = (object) => {
    }
 };
 
-nox.resolve = (parameter,targetObject) => {
-   if(nox.isMethod(parameter)) {
-      return parameter.run(targetObject);
+nox.resolve = (parameter,targetObject,index) => {
+   if(nox.isTemplate(parameter)) {
+      return nox.constructTemplate(parameter,targetObject,index);
    } else {
-      return parameter;
-   }
+      if(_.isString(parameter) && _.contains(_.keys(nox.templates),parameter)) {
+         return nox.constructTemplate(nox.templates[parameter],targetObject,index);
+      } else if(nox.isMethod(parameter)) {
+         return parameter.run(targetObject);
+      } else {
+         return parameter;
+      }
+   };
 };
 
 nox.checkFields = (source, fieldList, targetObject) => {
@@ -119,9 +129,11 @@ nox.checkFields = (source, fieldList, targetObject) => {
    return source._noxErrors.length > 0;
 };
 
+//-----------------
 nox.method = (input) => {
    var retVal = new function() {
       this._noxMethod = true;
+      this._noxType = "method";
       this._noxErrors = [];
       this.method = input.method;
       this.run = (targetObject) => {
@@ -139,6 +151,7 @@ nox.method = (input) => {
 nox.const = (input) => {
    var retVal = new function() {
       this._noxMethod = true;
+      this._noxType = "const";
       this._noxErrors = [];
       this.value = input.value;
       this.run = (targetObject) => {
@@ -159,6 +172,7 @@ nox.rnd = (input) => {
 
    var retVal = new function() {
       this._noxMethod = true;
+      this._noxType = "rnd";
       this._noxErrors = [];
       this.min = input.min;
       this.max = input.max;
@@ -207,6 +221,7 @@ nox.select = (input) => {
 
    var retVal = new function() {
       this._noxMethod = true;
+      this._noxType = "select";
       this._noxErrors = [];
       this.count = input.count;
       this.values = input.values;
@@ -259,12 +274,11 @@ nox.select = (input) => {
                   found = true;
                   if(nox.isTemplate(item.item)) {
                      retArr.push(nox.constructTemplate(item.item,targetObject,i));
-                     found = true;
                   } else {
                      if(_.isString(item.item) && _.contains(_.keys(nox.templates),item.item)) {
                         retArr.push(nox.constructTemplate(nox.templates[item.item],targetObject,i));
                      } else {
-                        retArr.push(item.item);
+                        retArr.push(nox.resolve(item.item));
                      }
                   }
                };

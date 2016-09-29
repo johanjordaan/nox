@@ -181,7 +181,7 @@ describe('nox.constructTemplate', () => {
       });
 
 
-      it('should set the _noxTemplate_name of the instance to the name of the template used to create it', (done) => {
+      it('should set the _noxTemplateName of the instance to the name of the template used to create it', (done) => {
          testInstance._noxTemplateName.should.equal('testTemplate');
          done();
       });

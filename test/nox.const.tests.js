@@ -6,6 +6,25 @@ var expect = require('chai').expect;
 var nox = require('../');
 
 describe('nox.const', () => {
+   describe(', with embedded templates ', () =>{
+      var t1 = nox.createTemplate("t1",{val: [nox.const({value:"Some value"})]});
+      var t2 = nox.createTemplate("t2",{nickname: nox.const({value:"Some Other?"})});
+      var tx = nox.createTemplate("tw",{x: t1,y: "t2"});
+
+      var result = nox.constructTemplate(tx);
+      it('should construct the referenced templates', (done) => {
+         result.x.should.exist;
+         result.x.val.should.be.a("array");
+         result.x.val.length.should.equal(1);
+         result.x.val[0].should.equal("Some value");
+         result.y.should.exist;
+         result.y.nickname.should.equal("Some Other?");
+         done();
+      });
+
+   });
+
+
    describe('- basic usage : ', () => {
       var c = nox.const({ value : 10});
 
