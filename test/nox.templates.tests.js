@@ -157,7 +157,7 @@ describe('nox.constructTemplate', () => {
 
 
       var tb = nox.createTemplate("t",{
-         val: nox.rnd({max:80}),
+         val: nox.rnd({max:89}),
       });
       var t2 = nox.constructTemplate("t",undefined,undefined,t1._id);
 
