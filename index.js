@@ -218,21 +218,23 @@ nox.select = (input) => {
             return this._noxErrors;
 
          var count = nox.resolve(this.count, targetObject);
-         var returnOne = nox.resolve(this.return_one, targetObject);
+         var returnOne = nox.resolve(this.returnOne, targetObject);
          var values = nox.resolve(this.values, targetObject);
 
-         if(count === 0 && !returnOne)
-           return [];
+         if(_.size(values) == 0) {
+            this._noxErrors.push("Values list should contain at least one value.");
+            return this._noxErrors;
+         }
 
          if(count !=1 && returnOne) {
             this._noxErrors.push("To select one a count of exactly 1 is required.");
             return this._noxErrors;
          }
 
-         if(_.size(values) == 0) {
-            this._noxErrors.push("Values list should contain at least one value.");
-            return this._noxErrors;
-         }
+         if(count === 0 && !returnOne)
+           return [];
+
+
 
          var defaultProbability = 1/_.size(values);
 

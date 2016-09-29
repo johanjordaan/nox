@@ -10,12 +10,11 @@ var test_utils = require("./test_utils");
 var nox = require('../');
 
 describe('nox.select', () => {
-    describe('- basic usage (select from non-template(list);) flat distribution : ', () => {
+   describe('- basic properties :',() => {
       var list = ['A','B','C','D'];
       var c = nox.select({
          values: list,
       });
-
       it('should set the _noxMethod flag', (done) => {
          c._noxMethod.should.equal(true);
          done();
@@ -32,23 +31,62 @@ describe('nox.select', () => {
          done();
       });
 
-      it('should set the default count to(1);', (done) => {
+      it('should set the default count to 1;', (done) => {
          c.count.should.equal(1);
          done();
       });
 
-      it('should set the deafult return_one flag to(false);', (done) => {
+      it('should set the deafult returnOne flag to false', (done) => {
          c.returnOne.should.equal(false);
          done();
       });
+
+      var c_one = nox.select.one({
+         values: list,
+      });
+
+      it('should set the default count to 1;', (done) => {
+         c_one.count.should.equal(1);
+         done();
+      });
+
+      it('should set the default returnOne flag to true', (done) => {
+         c_one.returnOne.should.equal(true);
+         done();
+      });
+
+
+      it('should return an empty list if the count is 0 and selectOne is false', (done) => {
+         var c_zero = nox.select({
+            values: list,
+            count: 0
+         });
+         var result = c_zero.run();
+         expect(result).to.be.a('array');
+         result.length.should.equal(0);
+         done();
+      });
+
+   });
+
+//----------------
+
+
+
+
+    describe('- basic usage (select from non-template list) flat distribution : ', () => {
+      var list = ['A','B','C','D'];
+      var c = nox.select({
+         values: list,
+      });
+
 
       var d = nox.select({
          count: 3,
          values: list,
       });
 
-
-      it('should set the count to(3);', (done) => {
+      it('should set the count to 3', (done) => {
          d.count.should.equal(3);
          done();
       });
@@ -173,5 +211,13 @@ describe('nox.select', () => {
          dResult[0].should.equal("Values list should contain at least one value.");
          done();
       });
+
+      it('should return an error message if the count is !=0 and returnOne is set', (done) =>{
+         var d = nox.select({ values: [1,2,3,4,5], returnOne: true, count: 2});
+         var dResult = d.run();
+         dResult[0].should.equal("To select one a count of exactly 1 is required.");
+         done();
+      });
+
    });
 });
