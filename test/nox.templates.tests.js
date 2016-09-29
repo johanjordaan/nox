@@ -6,6 +6,7 @@ var _ = require('underscore');
 
 var lcg_rnd = require('lcg-rnd');
 
+var deepCompare = require('../deepCompare');
 var test_utils = require("./test_utils");
 var nox = require('../');
 
@@ -136,6 +137,19 @@ describe('nox.isTemplateValid', () => {
 
 
 describe('nox.constructTemplate', () => {
+   describe(' on creating an instance using a seed', () =>{
+      var t = nox.createTemplate("t",{
+         val: nox.rnd({max:90}),
+      });
+
+      var t1 = nox.constructTemplate("t",undefined,undefined);
+      var t2 = nox.constructTemplate("t",undefined,undefined,t1._seed);
+
+      deepCompare(t1,t2).should.equal(true);
+
+   });
+
+
    describe('- basic usage : ', () => {
 
       var parentTemplate = nox.createTemplate('parentTemplate', {

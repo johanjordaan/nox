@@ -40,12 +40,19 @@ nox.createTemplate = (name, properties) => {
    return properties;
 };
 
-nox.constructTemplate = (template, parent, index) => {
+nox.constructTemplate = (template, parent, index, seed) => {
+   if(seed === undefined) {
+      seed = lcg_rnd.lcgParm.seed;
+   } else {
+      lcg_rnd.srand(seed);
+   }
    var retVal = {
       _parent: parent,
       _index: index,
       _noxErrors: [],
+      _seed: seed,
    };
+
 
    if(template === undefined) {
       retVal._noxErrors.push("Cannot construct template with undefined template parameter.");
@@ -83,7 +90,7 @@ nox.extendTemplate = (sourceTemplate,name,properties) => {
    return nox.createTemplate(name,newTemplate);
 };
 
-nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate','_noxType'];
+nox._noxKeys = ['_parent','_noxErrors','_index','_noxTemplateName','_noxTemplate','_noxType','_seed'];
 nox.deNox = (object) => {
    if(_.isArray(object)) {
       _.each(object,(item)=>{
