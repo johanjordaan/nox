@@ -15,13 +15,13 @@ describe('nox.method', () => {
       var c = nox.method({method : testMethod});
 
       it('should set the _noxMethod flag', (done) => {
-         c._noxMethod.should.equal(true);
+         c._nox.method.should.equal(true);
          done();
       });
 
       it('should set the _noxErrors flag', (done) => {
-         c._noxErrors.should.be.a('array');
-         c._noxErrors.length.should.equal(0);
+         c._nox.errors.should.be.a('array');
+         c._nox.errors.length.should.equal(0);
          done();
       });
 
@@ -49,8 +49,8 @@ describe('nox.method', () => {
       });
 
       it('should set the _noxMethod flag on the levels', (done) => {
-         c._noxMethod.should.equal(true);
-         c.method._noxMethod.should.equal(true);
+         c._nox.method.should.equal(true);
+         c.method._nox.method.should.equal(true);
          done();
       });
 

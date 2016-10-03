@@ -19,12 +19,12 @@ describe('nox.createTemplate', () => {
       });
 
       it('should set the _noxTemplate flag', (done) => {
-         testTemplate._noxTemplate.should.equal(true);
+         testTemplate._nox.template.should.equal(true);
          done();
       });
 
       it('should set the _noxTemplateName to the name of the template', (done) => {
-         testTemplate._noxTemplateName.should.equal('testTemplate');
+         testTemplate._nox.name.should.equal('testTemplate');
          done();
       });
 
@@ -142,8 +142,9 @@ describe('nox.constructTemplate', () => {
          val: nox.rnd({max:90}),
       });
 
+
       var t1 = nox.constructTemplate("t",undefined,undefined);
-      var t2 = nox.constructTemplate("t",undefined,undefined,t1._id);
+      var t2 = nox.constructTemplate("t",undefined,undefined,t1._nox.seed,t1._nox.hash);
 
       deepCompare(t1,t2).should.equal(true);
 
@@ -159,9 +160,9 @@ describe('nox.constructTemplate', () => {
       var tb = nox.createTemplate("t",{
          val: nox.rnd({max:89}),
       });
-      var t2 = nox.constructTemplate("t",undefined,undefined,t1._id);
+      var t2 = nox.constructTemplate("t",undefined,undefined,t1._nox.seed,t1._nox.hash);
 
-      t2._noxErrors[0].should.equal("Seed and hash does not match.");
+      t2._nox.errors[0].should.equal("Hash does not match template.");
 
    });
 
@@ -203,19 +204,19 @@ describe('nox.constructTemplate', () => {
       });
       var testInstance = nox.constructTemplate(testTemplate, parentInstance, 3);
 
-      it('should set _parent to the provided parent (parentInstance)', (done) => {
-         testInstance._parent.should.equal(parentInstance);
+      it('should set parent to the provided parent (parentInstance)', (done) => {
+         testInstance._nox.parent.should.equal(parentInstance);
          done();
       });
 
-      it('should set _index to the provided index', (done) => {
-         testInstance._index.should.equal(3);
+      it('should set index to the provided index', (done) => {
+         testInstance._nox.index.should.equal(3);
          done();
       });
 
 
-      it('should set the _noxTemplateName of the instance to the name of the template used to create it', (done) => {
-         testInstance._noxTemplateName.should.equal('testTemplate');
+      it('should set the name of the instance to the name of the template used to create it', (done) => {
+         testInstance._nox.templateName.should.equal('testTemplate');
          done();
       });
 
@@ -254,20 +255,20 @@ describe('nox.constructTemplate', () => {
       var parentInstance = nox.constructTemplate(xxx.a);
 
       it('should return an error list if template passed to the constructor does not exist', (done) => {
-         parentInstance._noxErrors.should.be.a('Array');
-         parentInstance._noxErrors.length.should.equal(1);
+         parentInstance._nox.errors.should.be.a('Array');
+         parentInstance._nox.errors.length.should.equal(1);
          done();
       });
 
       it('should return a usable error message', (done) => {
-         parentInstance._noxErrors[0].should.equal("Cannot construct template with undefined template parameter.");
+         parentInstance._nox.errors[0].should.equal("Cannot construct template with undefined template parameter.");
          done();
       });
 
       var stringInstance = nox.constructTemplate('someSillyTemplate');
 
       it('should tell the user which template it could not find', (done) => {
-         stringInstance._noxErrors[0].should.equal("Cannot find template [someSillyTemplate].");
+         stringInstance._nox.errors[0].should.equal("Cannot find template [someSillyTemplate].");
          done();
       });
    });
@@ -311,7 +312,7 @@ describe('nox.extendTemplate', () => {
       });
 
       it('should set the name of the extended template to the name specified', (done) => {
-         childTemplate._noxTemplateName.should.equal('childTemplate');
+         childTemplate._nox.name.should.equal('childTemplate');
          done();
       });
 

@@ -29,13 +29,13 @@ describe('nox.const', () => {
       var c = nox.const({ value : 10});
 
       it('should set the _noxMethod flag', (done) => {
-         c._noxMethod.should.equal(true);
+         c._nox.method.should.equal(true);
          done();
       });
 
       it('should set the _nox_errors flag', (done) => {
-         c._noxErrors.should.be.a('array');
-         c._noxErrors.length.should.equal(0);
+         c._nox.errors.should.be.a('array');
+         c._nox.errors.length.should.equal(0);
          done();
       });
 
@@ -62,9 +62,9 @@ describe('nox.const', () => {
       });
 
       it('should set the _noxMethod flag on the levels', (done) => {
-         c._noxMethod.should.equal(true);
-         c.value._noxMethod.should.equal(true);
-         c.value.value._noxMethod.should.equal(true);
+         c._nox.method.should.equal(true);
+         c.value._nox.method.should.equal(true);
+         c.value.value._nox.method.should.equal(true);
          done();
       });
 
