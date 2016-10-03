@@ -14,11 +14,7 @@ describe('nox.serialise', () => {
       var o = nox.constructTemplate(t);
 
       it('should save only the template hash and seed values',(done) => {
-         console.log(o);
          var so = nox.serialise(o);
-         console.log("---------->");
-         console.log(so);
-
 
          so._nox.should.exist;
          so._nox.templateName.should.exist;

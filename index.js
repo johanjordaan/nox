@@ -32,7 +32,7 @@ nox.isTemplateValid = (template) => {
 
 nox.templates = {};
 
-// Note this will owerwrite any other template by this name
+// Note this will overwrite any other template by this name
 nox.createTemplate = (name, properties) => {
    nox.templates[name] = deepClone(properties);
    nox.templates[name]._nox = {
@@ -67,7 +67,7 @@ nox.constructTemplate = (template, parent, index, seed, hash) => {
       }
    }
 
-   retVal._nox.templateName = template.name;
+   retVal._nox.templateName = template._nox.name;
 
    if(seed === undefined || hash === undefined) {
       retVal._nox.seed = lcg_rnd.lcgParm.seed;
@@ -144,7 +144,7 @@ nox.serialise = (noxObject) => {
          return(true);
       } else {
          nox._walk(item,(key,item,object) => {
-            if(_.contains(["parent","index","errors","templateName"],key)) {
+            if(!_.contains(["seed","hash","templateName"],key)) {
                delete object[key];
             };
          });
