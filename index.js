@@ -60,7 +60,7 @@ nox.constructTemplate = (template, parent, index, seed, hash) => {
 
    if(_.isString(template)) {
       var templateStr = template;
-      var template = nox.templates[template];
+      template = nox.templates[template];
       if(template === undefined) {
          retVal._nox.errors.push("Cannot find template [" + templateStr + "].");
          return retVal;
@@ -74,7 +74,7 @@ nox.constructTemplate = (template, parent, index, seed, hash) => {
       retVal._nox.hash = object_hash(template);
    } else {
       if(object_hash(template) !== hash ) {
-         retVal._nox.errors.push("Hash does not match template.");
+         retVal._nox.errors.push("Hash does not match template.",object_hash(template),hash);
          return retVal;
       } else {
          retVal._nox.hash = hash;
@@ -94,7 +94,7 @@ nox.constructTemplate = (template, parent, index, seed, hash) => {
          });
       }
    };
-   resolve(template,retVal);
+   resolve(deepClone(template),retVal);
 
    return retVal;
 };
@@ -138,6 +138,7 @@ nox.deNox = (object) => {
 
 nox.serialise = (noxObject) => {
    var retVal = deepClone(noxObject);
+
    var _serialise = (key,item,object) => {
       if(key !== "_nox"){
          delete object[key];
@@ -155,6 +156,18 @@ nox.serialise = (noxObject) => {
    nox._walk(retVal,_serialise);
 
    return(retVal);
+};
+
+nox.deserialise = (serialisedObject) => {
+   var retVal = nox.constructTemplate(
+      serialisedObject._nox.templateName,
+      undefined, //parent,
+      undefined, //index,
+      serialisedObject._nox.seed,
+      serialisedObject._nox.hash
+   );
+
+   return retVal;
 };
 
 nox.resolve = (parameter,targetObject,index) => {
