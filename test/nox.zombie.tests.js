@@ -4,7 +4,7 @@ var expect = require('chai').expect;
 
 var nox = require('../');
 
-describe.only('zombies', () => {
+describe('zombies', () => {
    describe(' from the readme templates ', () =>{
       var zombieTemplate = {
       	hp: nox.rnd({min:10,max:20}),
