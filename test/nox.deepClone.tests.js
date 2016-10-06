@@ -114,6 +114,19 @@ describe('nox.deepClone', () => {
             deepCompare(source,clone).should.equal(false);
             done();
          });
+
+         it('should detect recursive references and avoid them',(done) =>{
+            var a = {};
+            var b = {};
+
+            a.parent = b;
+            b.parent = a;
+
+            var aClone = deepClone(a);
+            done();
+
+         });
+
       });
 
       describe('- object cloning with modifications', () => {

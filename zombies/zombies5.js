@@ -2,8 +2,9 @@ var _ = require('underscore');
 var nox = require('../');
 
 var zombieTemplate = {
-  hp: nox.rnd({min:10,max:20}),
-  xp: nox.method({method: (o)=>{return(o.hp*1.5);}})
+  hp: nox.rnd.int({min:10,max:20}),
+  xp: nox.method({method: (o)=>{return(o.hp*1.5);}}),
+  type: nox.select({values:['walker','romeo','foxtrot']}),
 };
 nox.createTemplate("Zombie",zombieTemplate);
 var zombies = _.map(_.range(10),(i) => {

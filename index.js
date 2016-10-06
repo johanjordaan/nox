@@ -42,6 +42,20 @@ nox.createTemplate = (name, properties) => {
    return nox.templates[name];
 };
 
+nox.resolve = (parameter,targetObject,index) => {
+   if(nox.isTemplate(parameter)) {
+      return nox.constructTemplate(parameter,targetObject,index);
+   } else {
+      if(_.isString(parameter) && _.contains(_.keys(nox.templates),parameter)) {
+         return nox.constructTemplate(nox.templates[parameter],targetObject,index);
+      } else if(nox.isMethod(parameter)) {
+         return parameter.run(targetObject);
+      } else {
+         return parameter;
+      }
+   };
+};
+
 nox.constructTemplate = (template, parent, index, seed, hash) => {
    var retVal = {
       _nox: {
@@ -88,8 +102,15 @@ nox.constructTemplate = (template, parent, index, seed, hash) => {
          _.each(_.keys(source), (key) => {
             if(key === "_nox") {
             } else {
-               obj[key] = nox.resolve(source[key],retVal);
-               resolve(source[key],obj[key]);
+               if(_.isArray(source[key])) {
+                  obj[key] = [];
+                  _.each(source[key],(item)=>{
+                     obj[key].push(nox.resolve(item,retVal));
+                  });
+               } else {
+                  obj[key] = nox.resolve(source[key],retVal);
+                  resolve(source[key],obj[key]);
+               }
             }
          });
       }
@@ -168,20 +189,6 @@ nox.deserialise = (serialisedObject) => {
    );
 
    return retVal;
-};
-
-nox.resolve = (parameter,targetObject,index) => {
-   if(nox.isTemplate(parameter)) {
-      return nox.constructTemplate(parameter,targetObject,index);
-   } else {
-      if(_.isString(parameter) && _.contains(_.keys(nox.templates),parameter)) {
-         return nox.constructTemplate(nox.templates[parameter],targetObject,index);
-      } else if(nox.isMethod(parameter)) {
-         return parameter.run(targetObject);
-      } else {
-         return parameter;
-      }
-   };
 };
 
 nox.checkFields = (source, fieldList, targetObject) => {

@@ -67,13 +67,23 @@ describe('nox.deNox', () => {
       done();
    });
 
-   it('should remove the internal nox fields from an array of nox created objecta',(done)=>{
+   it('should remove the internal nox fields from an array of nox created object',(done)=>{
       var t = nox.createTemplate('test',{name:nox.const({value:"x"})});
       var i = _.map(_.range(10),(i)=>{return(nox.constructTemplate(t));});
       nox.deNox(i);
       _.keys(i).should.not.contain(nox._noxKeys);
       done();
    });
+
+   it('should remove the _nox keys from the object',(done)=>{
+      var a = nox.createTemplate('test',{name:nox.const({value:"x"})});
+      var t = nox.createTemplate('test2',{name:a});
+
+      var ti = nox.constructTemplate(t);
+      nox.deNox(ti);
+      done();
+   });
+
 });
 
 describe('nox.isTemplate', () => {
