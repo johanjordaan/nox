@@ -1,12 +1,12 @@
 var _ = require('underscore');
 var nox = require('../');
 
-var zombieTemplate = {
+var zombieSpec = {
   hp: nox.rnd.int({min:10,max:20}),
   xp: nox.method({method: (o)=>{return(o.hp*1.5);}}),
   type: nox.select({values:['walker','romeo','foxtrot']}),
 };
-nox.createTemplate("Zombie",zombieTemplate);
+var zombieTemplate = nox.createTemplate("Zombie",zombieSpec);
 var zombies = _.map(_.range(10),(i) => {
   return nox.constructTemplate("Zombie");
 });
@@ -14,3 +14,10 @@ var zombies = _.map(_.range(10),(i) => {
 _.each(zombies,(zombie)=>{
    console.log(nox.deNox(zombie));
 });
+
+// For testing
+module.exports = {
+   zombieSpec: zombieSpec,
+   zombieTemplate: zombieTemplate,
+   zombies: zombies,
+};
