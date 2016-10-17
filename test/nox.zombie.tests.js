@@ -129,7 +129,7 @@ describe('zombies', () => {
             nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
 
             expect(z.zombieSwarm).to.exist;
-            z.zombieSwarm.length.should.equal(10);
+            z.zombieSwarm.zombies.length.should.equal(10);
             _.each(z.zombieSwarm.zombies,(zombie)=>{
                _.contains(['walker','romeo','foxtrot'],zombie.type).should.equal(true);
                if(zombie.type === 'walker'){

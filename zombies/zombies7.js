@@ -10,7 +10,7 @@ var zombieSpec = {
      {probability:.1, item:'foxtrot'},
   ]}),
 };
-var zombieTemplate = nox.createTemplate("Zombie",zombieTemplate);
+var zombieTemplate = nox.createTemplate("Zombie",zombieSpec);
 var zombies = _.map(_.range(10),(i) => {
   return nox.constructTemplate("Zombie");
 });
