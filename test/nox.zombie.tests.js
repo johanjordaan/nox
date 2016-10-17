@@ -110,7 +110,7 @@ describe('zombies', () => {
       });
 
       describe('zombies8',()=>{
-         it('should create a zombie swarm based on the zombie templates',(done)=>{
+         it('should create fixed sized zombie swarms',(done)=>{
             var z = require('../zombies/zombies8');
             expect(z).to.exist;
 
@@ -145,6 +145,43 @@ describe('zombies', () => {
          });
       });
 
+
+      describe('zombies9',()=>{
+         it('should create variable sized zombie swarms',(done)=>{
+            var z = require('../zombies/zombies9');
+            expect(z).to.exist;
+
+            expect(z.walkerSpec).to.exist;
+            expect(z.romeoSpec).to.exist;
+            expect(z.foxtrotSpec).to.exist;
+            expect(z.zombieSwarmSpec).to.exist;
+
+            expect(z.walkerTemplate).to.exist;
+            nox.isTemplate(z.walkerTemplate).should.equal(true);
+            expect(z.romeoTemplate).to.exist;
+            nox.isTemplate(z.romeoTemplate).should.equal(true);
+            expect(z.foxtrotTemplate).to.exist;
+            nox.isTemplate(z.foxtrotTemplate).should.equal(true);
+            expect(z.zombieSwarmTemplate).to.exist;
+            nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
+
+            expect(z.zombieSwarm).to.exist;
+            z.zombieSwarm.zombies.length.should.be.at.least(5);
+            z.zombieSwarm.zombies.length.should.be.at.most(15);
+            _.each(z.zombieSwarm.zombies,(zombie)=>{
+               _.contains(['walker','romeo','foxtrot'],zombie.type).should.equal(true);
+               if(zombie.type === 'walker'){
+                  zombie.xp.should.equal(zombie.hp*1.5);
+               } else if (zombie.type === 'romeo') {
+                  zombie.xp.should.equal(zombie.hp*2);
+               } else if (zombie.type === 'foxtrot') {
+                  zombie.xp.should.equal(zombie.hp*3);
+               }
+
+            });
+            done();
+         });
+      });
 
 
 

@@ -1,43 +1,57 @@
 var _ = require('underscore');
 var nox = require('../');
 
-var walkerTemplate = {
+var walkerSpec = {
   hp: nox.rnd.int({min:10,max:20}),
   xp: nox.method({method: (o)=>{return(o.hp*1.5);}}),
   type: 'walker'
 };
 
-var romeoTemplate = {
+var romeoSpec = {
   hp: nox.rnd.int({min:30,max:50}),
   xp: nox.method({method: (o)=>{return(o.hp*2);}}),
   type: 'romeo'
 };
 
-var foxtrotTemplate = {
+var foxtrotSpec = {
   hp: nox.rnd.int({min:80,max:150}),
   xp: nox.method({method: (o)=>{return(o.hp*3);}}),
   type: 'foxtrot'
 };
 
-var walker = nox.createTemplate("walker_",walkerTemplate);
-var romeo = nox.createTemplate("romeo_",romeoTemplate);
-var foxtrot = nox.createTemplate("foxtrot_",foxtrotTemplate);
+var walkerTemplate = nox.createTemplate("walker_",walkerSpec);
+var romeoTemplate = nox.createTemplate("romeo_",romeoSpec);
+var foxtrotTemplate = nox.createTemplate("foxtrot_",foxtrotSpec);
 
-var zombieSwarmTemplate = {
+var zombieSwarmSpec = {
    zombies: nox.select({
       count: nox.rnd({min:5,max:15}),
       values:[
-         {probability:.6, item:walker},
-         {probability:.3, item:romeo},
-         {probability:.1, item:foxtrot},
+         {probability:.6, item:walkerTemplate},
+         {probability:.3, item:romeoTemplate},
+         {probability:.1, item:foxtrotTemplate},
       ]}),
 };
 
-nox.createTemplate("zombieSwarm",zombieSwarmTemplate);
-var zombieSwarm = nox.constructTemplate("zombieSwarm");
+var zombieSwarmTemplate = nox.createTemplate("ZombieSwarm",zombieSwarmSpec);
+var zombieSwarm = nox.constructTemplate("ZombieSwarm");
 
 _.each(zombieSwarm.zombies,(zombie)=>{
    console.log(nox.deNox(zombie));
 });
 
-module.exports = zombieSwarm;
+// For testing
+module.exports = {
+   walkerSpec: walkerSpec,
+   romeoSpec: romeoSpec,
+   foxtrotSpec: foxtrotSpec,
+
+   walkerTemplate: walkerTemplate,
+   romeoTemplate: romeoTemplate,
+   foxtrotTemplate: foxtrotTemplate,
+
+   zombieSwarmSpec: zombieSwarmSpec,
+   zombieSwarmTemplate: zombieSwarmTemplate,
+
+   zombieSwarm: zombieSwarm,
+};
