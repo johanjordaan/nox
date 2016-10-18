@@ -4,6 +4,7 @@ var should = require('chai').should();
 var expect = require('chai').expect;
 var _ = require('underscore');
 
+var deepClone = require('../deepClone');
 var deepCompare = require('../deepCompare');
 
 describe('deepCompare', () => {
@@ -115,6 +116,21 @@ describe('deepCompare', () => {
       });
       it('should detect object equality', (done) => {
          deepCompare({name:"Johan"},{name:"Johan"}).should.equal(true);
+         done();
+      });
+
+      it('should handle circular references', (done) => {
+         var johan = {name:"johan"};
+         var jordaan = {name_ref:johan};
+         johan.surname = jordaan;
+
+         var johan2 = deepClone(johan);
+
+
+         deepCompare(johan,johan2).should.equal(true);
+         deepCompare(johan,johan).should.equal(true);
+         deepCompare(johan,jordaan).should.equal(false);
+
          done();
       });
    });

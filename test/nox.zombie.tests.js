@@ -3,9 +3,11 @@ var should = require('chai').should();
 var expect = require('chai').expect;
 
 var nox = require('../');
+var deepCompare = require('../deepCompare');
+
 
 describe('zombies', () => {
-   describe.only('tutorial',()=>{
+   describe('tutorial',()=>{
       describe('zombies1',()=>{
          it('should just load the two requirements',(done)=>{
             var z = require('../zombies/zombies1');
@@ -21,6 +23,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             done();
          });
       });
@@ -32,6 +35,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             expect(z.zombies).to.exist;
             z.zombies.length.should.equal(10);
             _.each(z.zombies,(zombie)=>{
@@ -48,6 +52,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             expect(z.zombies).to.exist;
             z.zombies.length.should.equal(10);
             _.each(z.zombies,(zombie)=>{
@@ -64,6 +69,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             expect(z.zombies).to.exist;
             z.zombies.length.should.equal(10);
             _.each(z.zombies,(zombie)=>{
@@ -82,6 +88,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             expect(z.zombies).to.exist;
             z.zombies.length.should.equal(10);
             _.each(z.zombies,(zombie)=>{
@@ -99,6 +106,7 @@ describe('zombies', () => {
             expect(z.zombieSpec).to.exist;
             expect(z.zombieTemplate).to.exist;
             nox.isTemplate(z.zombieTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieTemplate).should.equal(true);
             expect(z.zombies).to.exist;
             z.zombies.length.should.equal(10);
             _.each(z.zombies,(zombie)=>{
@@ -121,12 +129,16 @@ describe('zombies', () => {
 
             expect(z.walkerTemplate).to.exist;
             nox.isTemplate(z.walkerTemplate).should.equal(true);
+            nox.isTemplateValid(z.walkerTemplate).should.equal(true);
             expect(z.romeoTemplate).to.exist;
             nox.isTemplate(z.romeoTemplate).should.equal(true);
+            nox.isTemplateValid(z.romeoTemplate).should.equal(true);
             expect(z.foxtrotTemplate).to.exist;
             nox.isTemplate(z.foxtrotTemplate).should.equal(true);
+            nox.isTemplateValid(z.foxtrotTemplate).should.equal(true);
             expect(z.zombieSwarmTemplate).to.exist;
             nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieSwarmTemplate).should.equal(true);
 
             expect(z.zombieSwarm).to.exist;
             z.zombieSwarm.zombies.length.should.equal(10);
@@ -158,12 +170,16 @@ describe('zombies', () => {
 
             expect(z.walkerTemplate).to.exist;
             nox.isTemplate(z.walkerTemplate).should.equal(true);
+            nox.isTemplateValid(z.walkerTemplate).should.equal(true);
             expect(z.romeoTemplate).to.exist;
             nox.isTemplate(z.romeoTemplate).should.equal(true);
+            nox.isTemplateValid(z.romeoTemplate).should.equal(true);
             expect(z.foxtrotTemplate).to.exist;
             nox.isTemplate(z.foxtrotTemplate).should.equal(true);
+            nox.isTemplateValid(z.foxtrotTemplate).should.equal(true);
             expect(z.zombieSwarmTemplate).to.exist;
             nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieSwarmTemplate).should.equal(true);
 
             expect(z.zombieSwarm).to.exist;
             z.zombieSwarm.zombies.length.should.be.at.least(5);
@@ -195,12 +211,16 @@ describe('zombies', () => {
 
             expect(z.walkerTemplate).to.exist;
             nox.isTemplate(z.walkerTemplate).should.equal(true);
+            nox.isTemplateValid(z.walkerTemplate).should.equal(true);
             expect(z.romeoTemplate).to.exist;
             nox.isTemplate(z.romeoTemplate).should.equal(true);
+            nox.isTemplateValid(z.romeoTemplate).should.equal(true);
             expect(z.foxtrotTemplate).to.exist;
             nox.isTemplate(z.foxtrotTemplate).should.equal(true);
+            nox.isTemplateValid(z.foxtrotTemplate).should.equal(true);
             expect(z.zombieSwarmTemplate).to.exist;
             nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieSwarmTemplate).should.equal(true);
 
             expect(z.zombieSwarm).to.exist;
             z.zombieSwarm.zombies.length.should.be.at.least(5);
@@ -219,6 +239,52 @@ describe('zombies', () => {
             done();
          });
       });
+
+      describe('zombies11',()=>{
+         it('should serialise and deserialise the zombieswarm',(done)=>{
+            var z = require('../zombies/zombies11');
+            expect(z).to.exist;
+
+            expect(z.walkerSpec).to.exist;
+            expect(z.romeoSpec).to.exist;
+            expect(z.foxtrotSpec).to.exist;
+            expect(z.zombieSwarmSpec).to.exist;
+
+            expect(z.walkerTemplate).to.exist;
+            nox.isTemplate(z.walkerTemplate).should.equal(true);
+            nox.isTemplateValid(z.walkerTemplate).should.equal(true);
+            expect(z.romeoTemplate).to.exist;
+            nox.isTemplate(z.romeoTemplate).should.equal(true);
+            nox.isTemplateValid(z.romeoTemplate).should.equal(true);
+            expect(z.foxtrotTemplate).to.exist;
+            nox.isTemplate(z.foxtrotTemplate).should.equal(true);
+            nox.isTemplateValid(z.foxtrotTemplate).should.equal(true);
+            expect(z.zombieSwarmTemplate).to.exist;
+            nox.isTemplate(z.zombieSwarmTemplate).should.equal(true);
+            nox.isTemplateValid(z.zombieSwarmTemplate).should.equal(true);
+
+            expect(z.zombieSwarm).to.exist;
+            z.zombieSwarm.zombies.length.should.be.at.least(5);
+            z.zombieSwarm.zombies.length.should.be.at.most(15);
+            _.each(z.zombieSwarm.zombies,(zombie)=>{
+               _.contains(['walker','romeo','foxtrot'],zombie.type).should.equal(true);
+               if(zombie.type === 'walker'){
+                  zombie.xp.should.equal(zombie.hp*1.5);
+               } else if (zombie.type === 'romeo') {
+                  zombie.xp.should.equal(zombie.hp*2);
+               } else if (zombie.type === 'foxtrot') {
+                  zombie.xp.should.equal(zombie.hp*3);
+               }
+
+            });
+
+            deepCompare(z.zombieSwarmDeSerialised, z.zombieSwarm).should.equal(true);
+
+            done();
+         });
+      });
+
+
 
    });
 

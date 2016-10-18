@@ -154,7 +154,7 @@ describe('nox.deepClone', () => {
             clone.surname.should.equal(mods.surname);
             done();
          });
-         it('should apply the modifications rcursavely',(done)=>{
+         it('should apply the modifications recursively',(done)=>{
             var source = {
                author:"Johan",
                books: [
