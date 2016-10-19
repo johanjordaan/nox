@@ -14,7 +14,7 @@ var zombie = {
 	xp: 50,
 }
 ```
-This is one instance of a zombie. The tempate for a zombie looks something like this:
+This is one instance of a zombie. The template for a zombie looks something like this:
 ```javascript
 var zombieTemplate = {
 	hp: <some value between 10 and 20>,
@@ -23,7 +23,7 @@ var zombieTemplate = {
 ```
 This is where nox comes in. It provides a way to define these types of templates. Here is an example of the above template using nox:
 ```javascript
-var zombieTemplate = {
+var zombieSpec = {
 	hp: nox.rnd({min:10,max:20}),
 	xp: nox.method((o)=>{o.xp = o.hp*1.5;})
 }
@@ -31,7 +31,7 @@ var zombieTemplate = {
 
 Now we can construct any number of zombies using this template like this:
 ```javascript
-nox.createTemplate('Zombie',zombieTemplate);
+var zombieTemplate = nox.createTemplate('Zombie',zombieSpec);
 var zombie1 = nox.constructTemplate('Zombie');
 var zombie2 = nox.constructTemplate('Zombie');
 ```
@@ -50,4 +50,4 @@ a *noxTemplate* consists of a mix of
 *noxTypes* and java types
 and can be instantiated as a *noxObject*
 
-3x5rz8
+3x5rz8 <-- Not a password :)
