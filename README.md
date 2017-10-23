@@ -3,6 +3,12 @@ nox ![Travis CI Status](https://api.travis-ci.org/johanjordaan/nox.svg?branch=ma
 
 A framework for generating parameter based random data structures
 
+Installing and Testing
+=======================
+`npm install`
+`npm test`
+
+
 Simple Example
 ==============
 
